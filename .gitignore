@@ -1,5 +1,38 @@
-node_modules
-dist
+# Dependencies
+node_modules/
+
+# Build
+dist/
+*.local
+
+# Env / secrets
 .env
+.env.*
+!.env.example
+
+# OS junk
 .DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editors / IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+
+# Lavish / agent local
 .lavish
+.fm-grok-turnend
+
+# Coverage / test artifacts
+coverage/
+.nyc_output/
+
+# TypeScript
+*.tsbuildinfo

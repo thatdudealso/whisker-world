@@ -1,0 +1,21 @@
+{
+  "name": "whisker-world",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "3D semi-open cat adventure - Whisker World",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "three": "^0.172.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.172.0",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.7"
+  }
+}
