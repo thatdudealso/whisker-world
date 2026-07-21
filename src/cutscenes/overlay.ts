@@ -110,13 +110,16 @@ export function playCutsceneOverlay(
   const onKeyDown = (event: KeyboardEvent): void => {
     if (event.key === " " || event.key === "Enter") {
       event.preventDefault();
+      event.stopPropagation();
       player.advance();
     } else if (event.key === "Escape") {
       event.preventDefault();
+      event.stopPropagation();
       player.skip();
     }
   };
-  // Capture phase so cutscene keys win over any other window-level handlers.
+  // Capture phase so cutscene keys win over any other window-level handlers,
+  // and stopPropagation so the finishing key never reaches gameplay input.
   window.addEventListener("keydown", onKeyDown, true);
 
   layer.addEventListener("click", () => player.advance());
