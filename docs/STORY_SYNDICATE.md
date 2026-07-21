@@ -16,18 +16,29 @@ The syndicate is the cats' shared social machine: ranks, debts, safehouses, riva
 
 ## Villain landing prompts
 
-Use these as lavish / captain prompts - **not** final canon until marked done.
+**FILLED** from the locked lavish boards **WW-D3 / WW-D4** (chapter 1 storyboard
+lock). Runtime beats live in `src/content/cutscenes/chapter1.ts`.
 
 1. **Who is the first face of opposition?** (person, cat, or system)
-   <!-- captain-fills-on-lavish -->
+   **Velvet** - a shadow cat of the neon district. Charmer first, threat
+   second: her opening move is an offer, not an attack ("Join the winning
+   side. The Rift pays."). The Rift itself is the systemic danger behind her.
 2. **What do they want from the Rift / the city / the cats?**
-   <!-- captain-fills-on-lavish -->
+   Velvet treats the Rift as an opportunity: power and profit for whoever
+   works with it instead of sealing it. She recruits cats to "the winning
+   side" and considers the neon city her territory.
 3. **Why can't the player ignore them after chapter 1?**
-   <!-- captain-fills-on-lavish -->
+   The C6 aftermath beat: Velvet has watched the crew seal the first tear and
+   answers with "Cute. Try that in my city." - the next tears run through her
+   turf, so the crew has to go through her.
 4. **What is the first boss or setpiece fantasy?**
-   <!-- captain-fills-on-lavish -->
+   Lane defense at the tear (C4-C5): the **Rift-Wisp** emerges ("Oh.
+   Visitors.") and the crew holds converging lanes to seal the tear
+   ("Hold the lanes - seal the tear!"). Cooperative hold-the-line, not a
+   duel.
 
 ## Tone guardrails
 
 - Cozy-capable but not toothless: stakes and mischief both welcome.
-- Avoid inventing final proper names for the big bad until captain fills the prompts above.
+- Working names above (Velvet, Rift-Wisp, Luna) are locked for chapter 1 via
+  WW-D3 / WW-D4; captain still owns final voice and long-arc villain design.

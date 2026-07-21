@@ -40,6 +40,32 @@ Conventions:
 - **Playable bounds unchanged**: radius 19 clamp (`DEFAULT_TUNING.boundsRadius`), visual disc radius 20.
 - **Light budget**: 1 hemisphere + 1 directional + 4 distance-limited point lights; other glow is emissive material, shared per prop group. Keep chapter builders in this ballpark for laptop perf.
 
+## Cutscenes
+
+Chapter 1 intro is a skippable card player over the live scene (no video, no
+cinematic cameras yet):
+
+- `src/content/cutscenes/chapter1.ts` - the six locked WW-D4 beats (id, title,
+  speaker, line, biomeTag, notes). Data only.
+- `src/cutscenes/player.ts` - pure state machine: idle -> playing -> finished.
+  `start()` only from idle (no double-trigger); `advance()` steps beats and
+  finishes past the last; `skip()` jumps to finished; `onFinished` fires once.
+- `src/cutscenes/overlay.ts` - DOM presentation: full-screen layer with a
+  solid-color plate per biomeTag, card (title / line / speaker / "1 / 6"
+  counter), Skip button. Space / Enter / click advance; Esc or Skip skips.
+- `src/cutscenes/introGate.ts` - first-visit gate over an injectable storage.
+
+Bootstrap (`src/main.ts`): on cold start the intro autoplays, then hands
+control to the game. Finishing (completed or skipped) sets
+`localStorage["ww_ch1_intro_seen"] = "1"`, so replay is opt-in via
+`?cutscene=1` (forces playback even when the flag is set). While the cutscene
+plays, `KeyboardInput.setEnabled(false)` gates gameplay input; the frame loop
+keeps rendering the greybox behind the cards. If localStorage throws (private
+mode), the intro plays and the flag write is swallowed.
+
+Unit tests: `tests/cutscene.test.ts` (beat order, state machine, skip,
+seen-flag behavior; pure functions, no jsdom needed).
+
 ## Path base (Vite)
 
 | Environment | `base` |
