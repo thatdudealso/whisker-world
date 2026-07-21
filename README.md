@@ -13,6 +13,7 @@ A 3D semi-open cat adventure: six cats, a secret syndicate, and chapter-scale ma
 npm install
 npm run dev      # http://localhost:5173
 npm run typecheck
+npm test
 npm run build
 npm run preview
 ```
