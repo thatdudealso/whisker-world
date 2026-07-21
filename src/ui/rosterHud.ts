@@ -63,6 +63,9 @@ export function createRosterHud(root: HTMLElement, selection: CatSelection): voi
     if (event.metaKey || event.ctrlKey || event.altKey) {
       return;
     }
+    if (event.repeat) {
+      return;
+    }
     if (event.key === "[") {
       selection.cycle(-1);
       return;
