@@ -7,7 +7,7 @@ import * as THREE from "three";
 import { KeyboardInput } from "./input/keyboard";
 import { PlayerController } from "./entities/cats/playerController";
 import { CameraRig } from "./systems/cameraRig";
-import { buildGreyboxWorld } from "./world/greybox";
+import { buildForestChapter1 } from "./world/chapters/forestChapter1";
 import { createHud } from "./ui/hud";
 
 const MAX_DT = 0.05; // clamp huge frames (tab refocus) so physics stays stable
@@ -20,21 +20,15 @@ if (!app) {
 createHud(document.body);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x2a2a32);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 app.appendChild(renderer.domElement);
 
-const ambient = new THREE.AmbientLight(0xffffff, 0.55);
-scene.add(ambient);
-const sun = new THREE.DirectionalLight(0xffffff, 0.85);
-sun.position.set(5, 10, 4);
-scene.add(sun);
-
-const world = buildGreyboxWorld(scene);
-const player = new PlayerController();
+// The chapter owns the scene mood: background, fog, and all lights.
+const world = buildForestChapter1(scene);
+const player = new PlayerController(world.spawn);
 scene.add(player.group);
 const cameraRig = new CameraRig(window.innerWidth / window.innerHeight);
 const input = new KeyboardInput();
