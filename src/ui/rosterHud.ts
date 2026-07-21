@@ -60,6 +60,9 @@ export function createRosterHud(root: HTMLElement, selection: CatSelection): voi
   // --- Roster keys. Separate listener from KeyboardInput on purpose: these
   // are edge-triggered UI events, not per-frame movement state.
   window.addEventListener("keydown", (event) => {
+    if (event.metaKey || event.ctrlKey || event.altKey) {
+      return;
+    }
     if (event.key === "[") {
       selection.cycle(-1);
       return;

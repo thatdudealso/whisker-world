@@ -35,7 +35,12 @@ export class CatSelection {
 
   constructor(storage: StorageLike | null = defaultStorage()) {
     this.storage = storage;
-    const stored = this.storage?.getItem(STORAGE_KEY);
+    let stored: string | null = null;
+    try {
+      stored = this.storage?.getItem(STORAGE_KEY) ?? null;
+    } catch {
+      // Some embeddings throw on any storage access; run memory-only.
+    }
     this.id = stored && isCatId(stored) ? stored : DEFAULT_CAT_ID;
   }
 
