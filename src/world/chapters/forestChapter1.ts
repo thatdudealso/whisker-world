@@ -158,10 +158,15 @@ export function buildForestChapter1(scene: THREE.Scene): ForestChapter {
     );
     stem.position.set(spec.x, spec.height / 2, spec.z);
     scene.add(stem);
+    const capRadius = spec.radius * 1.6;
     const cap = new THREE.Mesh(
-      new THREE.SphereGeometry(spec.radius * 1.6, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2),
+      new THREE.SphereGeometry(capRadius, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2),
       capMaterial,
     );
+    if (spec.hoppable) {
+      const flatScale = (spec.radius * 0.9) / capRadius;
+      cap.scale.set(flatScale, 0.14, flatScale);
+    }
     cap.position.set(spec.x, spec.height, spec.z);
     scene.add(cap);
   }

@@ -42,6 +42,8 @@ export interface PillarSpec {
   z: number;
   radius: number;
   height: number;
+  /** Low mushroom doubling as a hop platform: cap is flattened to keep its top clear. */
+  hoppable?: boolean;
 }
 
 /**
@@ -69,7 +71,7 @@ export const RIFT_SHARD: BoxSpec = {
  * overlook path (0.8m) doubles as a hop platform; the tall ones are walls.
  */
 export const GLOW_MUSHROOMS: readonly PillarSpec[] = [
-  { x: 3.5, z: -5.5, radius: 0.7, height: 0.8 },
+  { x: 3.5, z: -5.5, radius: 0.7, height: 0.8, hoppable: true },
   { x: -8, z: -6, radius: 0.5, height: 2.2 },
   { x: -11, z: 3, radius: 0.6, height: 2.6 },
   { x: 7, z: -7.5, radius: 0.45, height: 1.9 },
