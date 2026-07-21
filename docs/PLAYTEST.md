@@ -35,6 +35,17 @@ Use before claiming a build is playable. Expand as features land.
 - [ ] Rim tree trunks fade into fog; no visible hard world edge from inside bounds
 - [ ] Walking the full bounds circle: no prop clips the cat through walls, frame rate stays smooth on a laptop
 
+### Chapter 1 cutscene
+
+- [ ] First visit (clear `ww_ch1_intro_seen` in localStorage): intro cards autoplay before gameplay
+- [ ] Beat counter reads 1 / 6 through 6 / 6 in WW-D4 order; plate color shifts per setting
+- [ ] Space / Enter / click each advance exactly one card
+- [ ] Esc and the Skip button both jump straight to gameplay
+- [ ] WASD / Space do nothing to the cat while cards are up; no queued jump fires after
+- [ ] After finishing or skipping, reload does NOT replay the intro
+- [ ] `?cutscene=1` replays the intro even after it was seen
+- [ ] Movement, sprint, jump, and camera orbit all work normally once cards close
+
 ## Mobile (later)
 
 - [ ] Touch controls present or clear "desktop only" message

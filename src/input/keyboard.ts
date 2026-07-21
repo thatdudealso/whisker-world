@@ -37,8 +37,24 @@ const GAME_KEYS = new Set([
 export class KeyboardInput {
   private readonly held = new Set<string>();
   private jumpQueued = false;
+  private enabled = true;
+
+  /**
+   * Gate gameplay input (e.g. while a cutscene plays). Disabling clears all
+   * held state so no key or queued jump leaks through when re-enabled.
+   */
+  setEnabled(enabled: boolean): void {
+    this.enabled = enabled;
+    if (!enabled) {
+      this.held.clear();
+      this.jumpQueued = false;
+    }
+  }
 
   private readonly onKeyDown = (event: KeyboardEvent): void => {
+    if (!this.enabled) {
+      return;
+    }
     const key = event.key.toLowerCase();
     if (!GAME_KEYS.has(key)) {
       return;
