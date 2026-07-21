@@ -1,4 +1,5 @@
 import { CATS, type CatDefinition, type CatId } from "../content/cats";
+import { getChapter, type ChapterId } from "../content/chapters";
 import type { GameStage } from "../systems/gameFlow";
 import { CHAPTER1_OBJECTIVES, type ObjectiveState } from "../systems/objectives";
 import type { CatSelection } from "../systems/catSelection";
@@ -76,6 +77,7 @@ export class GameUi {
   private readonly hud: HTMLElement;
   private readonly activeCat: HTMLElement;
   private readonly objectives: HTMLElement;
+  private readonly completeUnlock: HTMLElement;
   private readonly callbacks: GameUiCallbacks;
   private stage: GameStage = "title";
 
@@ -90,7 +92,9 @@ export class GameUi {
     this.screens.set("select", this.createSelectScreen(selection));
     this.screens.set("intro", this.createEmptyScreen("intro"));
     this.screens.set("play", this.createEmptyScreen("play"));
-    this.screens.set("complete", this.createCompleteScreen());
+    const completeScreen = this.createCompleteScreen();
+    this.screens.set("complete", completeScreen);
+    this.completeUnlock = completeScreen.querySelector(".ww-complete-unlock") as HTMLElement;
 
     this.hud = document.createElement("div");
     this.hud.className = "ww-hud";
@@ -116,6 +120,13 @@ export class GameUi {
     dot.style.boxShadow = `0 0 12px ${cat.accentColor}`;
     (this.activeCat.querySelector("strong") as HTMLElement).textContent = cat.name;
     (this.activeCat.querySelector("small") as HTMLElement).textContent = cat.role;
+  }
+
+  /** Update the complete-screen copy once a chapter completes and unlocks the next one (or not). */
+  setUnlockedChapter(chapterId: ChapterId | null): void {
+    this.completeUnlock.textContent = chapterId
+      ? `${getChapter(chapterId).title} just unlocked - more of the Rift is opening up.`
+      : "";
   }
 
   setObjectives(state: ObjectiveState): void {
@@ -168,7 +179,7 @@ export class GameUi {
   private createCompleteScreen(): HTMLElement {
     const screen = document.createElement("section");
     screen.className = "ww-screen ww-complete";
-    screen.innerHTML = `<div class="ww-complete-card"><div class="ww-complete-mark">✦</div><p class="ww-kicker">Chapter 1 / Whisperleaf Forest</p><h2>Trail complete</h2><p>The shard is quiet, the clearing is safe, and the six trails have a new story to tell. The Rift is waiting beyond the trees.</p><div class="ww-complete-actions"><button class="ww-button ww-button--quiet" data-action="title" type="button">Return to title</button><button class="ww-button" data-action="replay" type="button">Replay chapter</button></div></div>`;
+    screen.innerHTML = `<div class="ww-complete-card"><div class="ww-complete-mark">✦</div><p class="ww-kicker">Chapter 1 / Whisperleaf Forest</p><h2>Trail complete</h2><p>The shard is quiet, the clearing is safe, and the six trails have a new story to tell. The Rift is waiting beyond the trees.</p><p class="ww-complete-unlock"></p><div class="ww-complete-actions"><button class="ww-button ww-button--quiet" data-action="title" type="button">Return to title</button><button class="ww-button" data-action="replay" type="button">Replay chapter</button></div></div>`;
     screen.querySelector('[data-action="title"]')?.addEventListener("click", this.callbacks.onReturnToTitle);
     screen.querySelector('[data-action="replay"]')?.addEventListener("click", this.callbacks.onReplay);
     this.root.appendChild(screen);

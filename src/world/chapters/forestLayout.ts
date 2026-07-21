@@ -67,6 +67,14 @@ export const RIFT_SHARD: BoxSpec = {
 };
 
 /**
+ * Cap radius is wider than the stem (see `forestChapter1.ts` `addMushroom`,
+ * which draws the cap at `radius * MUSHROOM_CAP_SCALE`). The cap is the
+ * blocking silhouette a player sees, so collision must use it too - single
+ * source of truth shared by layout (this file) and visuals.
+ */
+export const MUSHROOM_CAP_SCALE = 1.72;
+
+/**
  * Bioluminescent mushroom proxies: glowing caps on stems. The low one by the
  * overlook path (0.8m) doubles as a hop platform; the tall ones are walls.
  */
@@ -126,13 +134,30 @@ export function aabbFromPillar(spec: PillarSpec): AabbObstacle {
   };
 }
 
+/**
+ * Mushroom footprint uses the cap radius, not the stem radius: the cap is
+ * the wide part a walking cat's body actually hits. The low hoppable
+ * mushroom keeps its `top` at the stem height, so its widened footprint
+ * still resolves as a platform once a cat clears it, not a wider wall.
+ */
+export function aabbFromMushroom(spec: PillarSpec): AabbObstacle {
+  const capRadius = spec.radius * MUSHROOM_CAP_SCALE;
+  return {
+    minX: spec.x - capRadius,
+    maxX: spec.x + capRadius,
+    minZ: spec.z - capRadius,
+    maxZ: spec.z + capRadius,
+    top: spec.height,
+  };
+}
+
 /** Every collidable prop in the chapter, as controller-ready AABBs. */
 export function forestObstacles(): AabbObstacle[] {
   return [
     ...OVERLOOK_STEPS.map(aabbFromBox),
     aabbFromBox(RIFT_SHARD),
     ...PATH_ROCKS.map(aabbFromBox),
-    ...GLOW_MUSHROOMS.map(aabbFromPillar),
+    ...GLOW_MUSHROOMS.map(aabbFromMushroom),
     ...TREE_TRUNKS.map(aabbFromPillar),
   ];
 }

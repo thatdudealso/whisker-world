@@ -10,7 +10,11 @@ describe("GameFlow", () => {
     flow.beginIntro();
     flow.beginPlay();
     flow.completeChapter();
-    expect(flow.current).toEqual({ stage: "complete", selectedCatId: "misty" });
+    expect(flow.current).toEqual({
+      stage: "complete",
+      selectedCatId: "misty",
+      unlockedChapterId: "chapter-2",
+    });
   });
 
   it("ignores out-of-order transitions", () => {

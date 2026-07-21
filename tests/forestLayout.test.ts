@@ -3,7 +3,10 @@ import {
   FOREST_BOUNDS_RADIUS,
   FOREST_CLEARING,
   FOREST_SPAWN,
+  GLOW_MUSHROOMS,
+  MUSHROOM_CAP_SCALE,
   OVERLOOK_STEPS,
+  aabbFromMushroom,
   forestObstacles,
 } from "../src/world/chapters/forestLayout";
 import {
@@ -86,6 +89,54 @@ describe("forest chapter layout", () => {
     expect(s.z).toBe(FOREST_SPAWN.z);
     expect(s.y).toBe(0);
     expect(s.grounded).toBe(true);
+  });
+});
+
+describe("mushroom collision matches the visual cap silhouette", () => {
+  it("gives every mushroom a footprint as wide as its rendered cap, not its thin stem", () => {
+    for (const spec of GLOW_MUSHROOMS) {
+      const box = aabbFromMushroom(spec);
+      const capRadius = spec.radius * MUSHROOM_CAP_SCALE;
+      expect(box.maxX - box.minX, `${spec.x},${spec.z}`).toBeCloseTo(capRadius * 2);
+      expect(box.maxZ - box.minZ, `${spec.x},${spec.z}`).toBeCloseTo(capRadius * 2);
+      // A footprint keyed to the thin stem radius would be much narrower
+      // than the cap - guard against regressing back to that bug directly.
+      expect(capRadius).toBeGreaterThan(spec.radius);
+    }
+  });
+
+  it("blocks a walking cat at the tall (non-hoppable) mushroom's cap radius, not its stem", () => {
+    const tall = GLOW_MUSHROOMS.find((spec) => !spec.hoppable);
+    expect(tall).toBeDefined();
+    const spec = tall!;
+    const capRadius = spec.radius * MUSHROOM_CAP_SCALE;
+    const s = createLocomotionState({ x: spec.x - capRadius - 3, y: 0, z: spec.z, yaw: 0 });
+    const walkTowardMushroom = { move: { x: 1, z: 0 }, sprint: true, jump: false };
+    for (let i = 0; i < 600; i++) {
+      stepLocomotion(s, walkTowardMushroom, OBSTACLES, DEFAULT_TUNING, 1 / 120);
+    }
+    const distanceFromCenter = spec.x - s.x;
+    expect(distanceFromCenter).toBeGreaterThanOrEqual(capRadius + DEFAULT_TUNING.bodyRadius - 0.02);
+  });
+
+  it("keeps the hoppable mushroom a platform on top while still blocking its cap from the side", () => {
+    const hop = GLOW_MUSHROOMS.find((spec) => spec.hoppable);
+    expect(hop).toBeDefined();
+    const spec = hop!;
+    const capRadius = spec.radius * MUSHROOM_CAP_SCALE;
+
+    // Falling straight down onto the cap lands on its top, not the ground.
+    const support = supportHeightAt({ x: spec.x, z: spec.z }, spec.height + 1, OBSTACLES, DEFAULT_TUNING.bodyRadius);
+    expect(support).toBe(spec.height);
+
+    // Approaching from the side while grounded is still pushed out to the cap radius.
+    const pushed = resolveObstacleSides(
+      { x: spec.x - capRadius - 0.1, z: spec.z },
+      0,
+      OBSTACLES,
+      DEFAULT_TUNING.bodyRadius,
+    );
+    expect(spec.x - pushed.x).toBeGreaterThanOrEqual(capRadius);
   });
 });
 

@@ -102,6 +102,9 @@ flow.subscribe((state) => {
     ui.setObjectives(objectives);
     input.setEnabled(true);
   }
+  if (state.stage === "complete") {
+    ui.setUnlockedChapter(state.unlockedChapterId);
+  }
 });
 
 if (import.meta.env.DEV) {

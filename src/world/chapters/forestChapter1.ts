@@ -14,6 +14,7 @@ import {
   FOREST_GROUND_RADIUS,
   FOREST_SPAWN,
   GLOW_MUSHROOMS,
+  MUSHROOM_CAP_SCALE,
   OVERLOOK_STEPS,
   PATH_ROCKS,
   RIFT_SHARD,
@@ -137,7 +138,7 @@ function addTree(scene: THREE.Scene, spec: (typeof TREE_TRUNKS)[number], trunkMa
 }
 
 function addMushroom(scene: THREE.Scene, spec: (typeof GLOW_MUSHROOMS)[number], stemMaterial: THREE.Material, capMaterial: THREE.Material, spotMaterial: THREE.Material): void {
-  const capRadius = spec.radius * 1.72;
+  const capRadius = spec.radius * MUSHROOM_CAP_SCALE;
   const capScaleY = spec.hoppable ? 0.38 : 0.62;
   const capHeight = capRadius * capScaleY;
   const stemHeight = Math.max(spec.height - capHeight, 0.08);

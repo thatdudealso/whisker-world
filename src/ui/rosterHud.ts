@@ -4,11 +4,13 @@
  *
  * - Top right: active cat chip (name + role), live-updates on swap.
  * - Keys: `[` / `]` cycle the roster, `1`-`6` jump straight to a cat.
- * - Below the title: one chip per chapter; locked ones are dimmed and
- *   clicking them shows a "coming soon" toast for locked chapters.
+ * - Below the title: progressive chapter row - unlocked chapters first, then
+ *   at most one "next" locked tease chip. The remaining chapters stay
+ *   hidden entirely so a fresh profile never reads as "all six available".
  */
 import { CATS, type CatDefinition } from "../content/cats";
-import { canEnterChapter, CHAPTERS } from "../content/chapters";
+import { canEnterChapter, CHAPTERS, type ChapterDefinition } from "../content/chapters";
+import { getChapterProgressStorage, isChapterUnlocked } from "../content/chapterProgress";
 import type { CatSelection } from "../systems/catSelection";
 
 const CHIP_STYLE = [
@@ -40,18 +42,31 @@ export function createRosterHud(root: HTMLElement, selection: CatSelection): voi
   selection.subscribe(renderCat);
   root.appendChild(catChip);
 
-  // --- Chapter select stub: one row of chips under the title chip.
+  // --- Chapter select stub: unlocked chapters, plus at most one locked
+  // "next" tease. The rest of the roster stays hidden until earned.
   const chapterRow = document.createElement("div");
   chapterRow.style.cssText = CHIP_STYLE + ";top:44px;left:8px;pointer-events:auto";
+  const progressStorage = getChapterProgressStorage();
+  const visibleChapters: ChapterDefinition[] = [];
   for (const chapter of CHAPTERS) {
+    if (isChapterUnlocked(chapter.id, progressStorage)) {
+      visibleChapters.push(chapter);
+      continue;
+    }
+    visibleChapters.push(chapter);
+    break;
+  }
+  for (const chapter of visibleChapters) {
     const chip = document.createElement("span");
-    const enterable = canEnterChapter(chapter);
+    const unlocked = isChapterUnlocked(chapter.id, progressStorage);
+    const enterable = unlocked && canEnterChapter(chapter);
     chip.textContent = enterable ? `▶ ${chapter.title}` : `🔒 ${chapter.title}`;
     chip.style.cssText = enterable
       ? "cursor:default;margin-right:10px"
       : "cursor:pointer;opacity:0.45;margin-right:10px";
     if (!enterable) {
-      chip.addEventListener("click", () => showToast(root, `${chapter.title} - coming soon`));
+      const message = unlocked ? `${chapter.title} - coming soon` : `${chapter.title} - complete the previous chapter to unlock`;
+      chip.addEventListener("click", () => showToast(root, message));
     }
     chapterRow.appendChild(chip);
   }
