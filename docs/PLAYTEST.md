@@ -11,6 +11,18 @@ Use before claiming a build is playable. Expand as features land.
 - [ ] Window resize keeps aspect ratio
 - [ ] `npm run build` && `npm run preview` still playable
 
+### Locomotion slice
+
+- [ ] Cat accelerates smoothly (~0.2s to full speed), decelerates without ice-skating
+- [ ] Cat visibly faces its travel direction (nose leads)
+- [ ] Shift sprint is noticeably faster than walk
+- [ ] Space jumps once; no double-jump mid-air; apex reads clearly
+- [ ] Cat lands back on the ground plane, never sinks through it
+- [ ] World bounds stop the cat (radius 19) without teleporting or jitter
+- [ ] Blocks push the cat out sideways; low blocks are jumpable onto
+- [ ] Camera lags softly behind movement; Q / E orbit works; no nausea snap
+- [ ] Controls hint strip visible at the bottom of the screen
+
 ## Mobile (later)
 
 - [ ] Touch controls present or clear "desktop only" message
