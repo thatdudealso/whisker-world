@@ -1,10 +1,9 @@
 /**
  * Chapter table stub: six biome chapters, one home cat each (WW-D2).
  *
- * Data only - no biome geometry lives here or in src/world yet; that is a
- * separate task. Titles are working placeholders pending WW-D2 board
- * confirmation; ids, homeCatId mapping, and the chapter-1 forest/Luna
- * unlock are the durable parts.
+ * Data only - biome geometry lives in the chapter builders under src/world,
+ * not in this table. Titles, ids, homeCatId mapping, and the chapter-1
+ * forest/Luna unlock are the content contract.
  */
 import type { CatId } from "./cats";
 

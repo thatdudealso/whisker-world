@@ -1,13 +1,13 @@
-# Content Pipeline (stub)
+# Content Pipeline
 
-How levels, cats, dialogue, and encounters will enter the game. Phase 0: empty process - fill as tools appear.
+How levels, cats, dialogue, and encounters enter the game. Chapter 1 is currently authored directly in typed source; external authoring tools remain future work.
 
 ## Planned sources
 
 | Content | Likely home | Notes |
 |---------|-------------|-------|
 | Cat stats / kits | `src/content` or JSON under `assets` | Data-driven preferred |
-| Chapter layouts | `src/world` + content tables | Greybox first |
+| Chapter layouts | `src/world` + content tables | Code-built Three.js scene with pure layout data |
 | Dialogue / cutscenes | `src/cutscenes` + content | Rift / syndicate lines |
 | Art / audio | `assets/` | After WW-D0-art |
 

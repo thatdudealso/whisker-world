@@ -35,7 +35,7 @@ See [DESIGN_DECISIONS.md](DESIGN_DECISIONS.md) for the decision record.
 - Reference sheets for the accessory kit (scarf/bag/prop shapes).
 - Camera framing references at gameplay distance.
 
-## Placeholders allowed now (Phase 0 greybox)
+## Current placeholder pass
 - Solid-color meshes, capsules, grid helpers.
 - Temporary debug labels in UI.
-- Greybox geometry remains the interim look until clay/toon assets are produced.
+- Code-built clay-toon forms and landmark silhouettes are the current interim look until finished assets are produced.

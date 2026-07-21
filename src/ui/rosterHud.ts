@@ -1,11 +1,11 @@
 /**
- * Roster + chapter select stub UI. Same ugly-greybox DOM-chip language as
- * hud.ts: no framework, fixed-position elements only.
+ * Legacy roster + chapter select stub UI. The shipped Chapter 1 presentation
+ * lives in gameUi.ts; this helper remains a no-framework testable UI surface.
  *
  * - Top right: active cat chip (name + role), live-updates on swap.
  * - Keys: `[` / `]` cycle the roster, `1`-`6` jump straight to a cat.
  * - Below the title: one chip per chapter; locked ones are dimmed and
- *   clicking them shows a "coming soon" toast (no biome geometry yet).
+ *   clicking them shows a "coming soon" toast for locked chapters.
  */
 import { CATS, type CatDefinition } from "../content/cats";
 import { canEnterChapter, CHAPTERS } from "../content/chapters";
