@@ -23,6 +23,18 @@ Use before claiming a build is playable. Expand as features land.
 - [ ] Camera lags softly behind movement; Q / E orbit works; no nausea snap
 - [ ] Controls hint strip visible at the bottom of the screen
 
+### Chapter 1 - Whimsical Glowing Forest (greybox)
+
+- [ ] Cat spawns on the glowing mint ring in the clearing, facing north (toward the overlook)
+- [ ] Night mood reads: deep blue sky + fog, but the cat and nearby props stay clearly readable
+- [ ] Overlook (north): three mossy steps climb with single jumps; top platform (2.7m) gives a view back over the clearing
+- [ ] Rift shard (east): violet glowing shard over a ground crack; visible from the clearing through the rock-ring gap
+- [ ] Bioluminescent mushrooms glow teal; the low one near the overlook path is hoppable onto
+- [ ] Path rocks ring the clearing; gaps lead north / east / south; low rocks hoppable, tall ones block
+- [ ] Starlight trail dots lead from the clearing toward the overlook and the rift
+- [ ] Rim tree trunks fade into fog; no visible hard world edge from inside bounds
+- [ ] Walking the full bounds circle: no prop clips the cat through walls, frame rate stays smooth on a laptop
+
 ## Mobile (later)
 
 - [ ] Touch controls present or clear "desktop only" message

@@ -13,6 +13,7 @@ import {
   type LocomotionInput,
   type LocomotionState,
   type PlayerTuning,
+  type SpawnPose,
 } from "./locomotion";
 
 export class PlayerController {
@@ -20,10 +21,12 @@ export class PlayerController {
   private readonly state: LocomotionState;
   private readonly tuning: PlayerTuning;
 
-  constructor(tuning: PlayerTuning = DEFAULT_TUNING) {
+  constructor(spawn?: SpawnPose, tuning: PlayerTuning = DEFAULT_TUNING) {
     this.group = createCatPlaceholder();
-    this.state = createLocomotionState();
+    this.state = createLocomotionState(spawn);
     this.tuning = tuning;
+    this.group.position.set(this.state.x, this.state.y, this.state.z);
+    this.group.rotation.y = this.state.yaw;
   }
 
   update(dt: number, input: LocomotionInput, obstacles: readonly AabbObstacle[]): void {

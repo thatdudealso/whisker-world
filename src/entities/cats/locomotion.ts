@@ -82,8 +82,25 @@ export interface LocomotionInput {
   jump: boolean;
 }
 
-export function createLocomotionState(): LocomotionState {
-  return { x: 0, y: 0, z: 0, vx: 0, vz: 0, vy: 0, yaw: 0, grounded: true };
+/** Where a chapter places the cat at load: feet position plus facing. */
+export interface SpawnPose {
+  x: number;
+  y: number;
+  z: number;
+  yaw: number;
+}
+
+export function createLocomotionState(spawn?: SpawnPose): LocomotionState {
+  return {
+    x: spawn?.x ?? 0,
+    y: spawn?.y ?? 0,
+    z: spawn?.z ?? 0,
+    vx: 0,
+    vz: 0,
+    vy: 0,
+    yaw: spawn?.yaw ?? 0,
+    grounded: true,
+  };
 }
 
 /**
