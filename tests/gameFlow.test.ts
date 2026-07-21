@@ -35,5 +35,13 @@ describe("GameFlow", () => {
     flow.returnToTitle();
     expect(flow.current.stage).toBe("title");
   });
-});
 
+  it("can enter play directly after the intro has been seen", () => {
+    const flow = new GameFlow("luna");
+
+    flow.openSelect();
+    flow.skipIntro();
+
+    expect(flow.current.stage).toBe("play");
+  });
+});

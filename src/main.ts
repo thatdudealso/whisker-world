@@ -7,7 +7,7 @@
  */
 import * as THREE from "three";
 import { CHAPTER1_BEATS } from "./content/cutscenes/chapter1";
-import { getIntroStorage, markIntroSeen } from "./cutscenes/introGate";
+import { getIntroStorage, markIntroSeen, shouldPlayIntro } from "./cutscenes/introGate";
 import { playCutsceneOverlay } from "./cutscenes/overlay";
 import { PlayerController } from "./entities/cats/playerController";
 import { KeyboardInput } from "./input/keyboard";
@@ -65,8 +65,13 @@ const startIntro = (): void => {
 const ui = new GameUi(document.body, selection, {
   onStart: () => flow.openSelect(),
   onContinue: () => {
-    flow.beginIntro();
-    startIntro();
+    if (shouldPlayIntro(window.location.search, getIntroStorage())) {
+      flow.beginIntro();
+      startIntro();
+      return;
+    }
+    resetChapter();
+    flow.skipIntro();
   },
   onReplay: () => {
     resetChapter();

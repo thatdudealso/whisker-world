@@ -56,6 +56,12 @@ export class GameFlow {
     }
   }
 
+  skipIntro(): void {
+    if (this.state.stage === "select") {
+      this.setStage("play");
+    }
+  }
+
   completeChapter(): void {
     if (this.state.stage === "play") {
       this.setStage("complete");
@@ -74,4 +80,3 @@ export class GameFlow {
     }
   }
 }
-

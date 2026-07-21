@@ -137,10 +137,14 @@ function addTree(scene: THREE.Scene, spec: (typeof TREE_TRUNKS)[number], trunkMa
 }
 
 function addMushroom(scene: THREE.Scene, spec: (typeof GLOW_MUSHROOMS)[number], stemMaterial: THREE.Material, capMaterial: THREE.Material, spotMaterial: THREE.Material): void {
-  const stem = addMesh(scene, new THREE.CapsuleGeometry(spec.radius * 0.52, spec.height * 0.62, 5, 8), stemMaterial, new THREE.Vector3(spec.x, spec.height * 0.42, spec.z), new THREE.Vector3(1, 1, 1));
-  stem.scale.y = spec.height / Math.max(spec.radius * 1.1, 0.1);
   const capRadius = spec.radius * 1.72;
-  const cap = addMesh(scene, new THREE.SphereGeometry(capRadius, 16, 10, 0, Math.PI * 2, 0, Math.PI / 2), capMaterial, new THREE.Vector3(spec.x, spec.height * 0.78, spec.z), new THREE.Vector3(1, 0.62, 1));
+  const capScaleY = spec.hoppable ? 0.38 : 0.62;
+  const capHeight = capRadius * capScaleY;
+  const stemHeight = Math.max(spec.height - capHeight, 0.08);
+  const stemRadius = spec.radius * 0.52;
+  const stemLength = Math.max(stemHeight - stemRadius * 2, 0.02);
+  addMesh(scene, new THREE.CapsuleGeometry(stemRadius, stemLength, 5, 8), stemMaterial, new THREE.Vector3(spec.x, stemHeight / 2, spec.z));
+  const cap = addMesh(scene, new THREE.SphereGeometry(capRadius, 16, 10, 0, Math.PI * 2, 0, Math.PI / 2), capMaterial, new THREE.Vector3(spec.x, spec.height - capHeight, spec.z), new THREE.Vector3(1, capScaleY, 1));
   cap.rotation.y = spec.x * 0.3;
   for (let index = 0; index < 3; index += 1) {
     const angle = index * (Math.PI * 2 / 3) + spec.x;
@@ -150,7 +154,7 @@ function addMushroom(scene: THREE.Scene, spec: (typeof GLOW_MUSHROOMS)[number], 
       spotMaterial,
       new THREE.Vector3(
         spec.x + Math.cos(angle) * capRadius * 0.55,
-        spec.height * 0.91 + Math.sin(angle * 2) * 0.02,
+        spec.height - capHeight * 0.18 + Math.sin(angle * 2) * 0.02,
         spec.z + Math.sin(angle) * capRadius * 0.55,
       ),
     );
