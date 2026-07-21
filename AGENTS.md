@@ -26,7 +26,7 @@ Guidance for coding agents and humans working in this repo.
 - `assets/` - runtime art / audio (empty until art board)
 - `docs/` - design and hosting docs (source of truth for product constraints)
 - `services/api/` - future API surface (stub)
-- `tests/` - tests (stub)
+- `tests/` - vitest unit tests for pure game logic (e.g. locomotion model)
 
 ## Commands
 
@@ -34,6 +34,7 @@ Guidance for coding agents and humans working in this repo.
 npm install
 npm run dev
 npm run typecheck
+npm test
 npm run build
 ```
 

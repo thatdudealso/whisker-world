@@ -15,11 +15,16 @@
 
 ## Motion / input
 
-- Desktop: keyboard (WASD / arrows) for locomotion stub; mouse look / gamepad later.
+- Desktop: keyboard (WASD / arrows) locomotion, Space jump, Shift sprint, Q / E camera orbit; mouse look / gamepad later.
 - Mobile: on-screen stick / touch later; document in [PLAYTEST.md](PLAYTEST.md).
 - Motion / device orientation: optional later; must degrade gracefully and stay opt-in.
 
-Phase 0 greybox: WASD moves the capsule cat; camera follows simply.
+Locomotion slice (Phase 0 greybox, kinematic - Rapier can replace later):
+
+- `src/input/keyboard.ts` owns key state and emits a per-frame snapshot (normalized move vector, sprint held, edge-triggered jump, orbit direction). Clears on window blur.
+- `src/entities/cats/locomotion.ts` is the pure motion model (no three.js): horizontal velocity approaches input * speed cap at a constant rate (`acceleration` when input held, `deceleration` when released - the "not ice-skating, not tank-sticky" band); yaw turns toward travel direction; single jump from grounded under gravity; circular world-bounds clamp (radius 19 on the 40x40 greybox ground); AABB blocks push the cat out sideways while feet are below the block top and act as landable platforms at/above it. Tuning lives in `DEFAULT_TUNING`.
+- `src/systems/cameraRig.ts` is the third-person camera: exponential-damped follow of player + offset (position stiffness ~5, look-target ~9) plus slow Q / E orbit; snaps once on first frame instead of swooping in.
+- Unit tests for the pure model: `tests/` (vitest, `npm test`).
 
 ## Path base (Vite)
 
