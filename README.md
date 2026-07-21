@@ -6,7 +6,7 @@ Whisker World is a 3D semi-open cat adventure about prowling through chapter-sca
 
 ## What kind of world is this?
 
-Each chapter is a region with a hub, side routes, landmarks, and a main objective chain. You can wander, climb, backtrack, and choose which trail to follow. Progress may open new routes, but the core fantasy is room to explore rather than a fixed sequence of camera beats.
+The planned chapter design is a region with a hub, side routes, landmarks, and a main objective chain. The finished game will let you wander, climb, backtrack, and choose which trail to follow, with progress opening new routes. The core fantasy is room to explore rather than a fixed sequence of camera beats; Phase 0 does not implement that full chapter structure yet.
 
 Six distinct cats are the structural heart of the adventure. Their roles and kits will give the roster different ways to read a space and solve a problem. Around them sits the syndicate: a shared social machine of jobs, debts, safehouses, rival cells, and loyalties that are never quite as simple as hero or villain.
 
@@ -14,7 +14,7 @@ The Rift is the thread running underneath it all. Something has torn between ord
 
 ## The feel
 
-Bodies, creatures, props, and environments are headed toward a soft clay-toon look: rounded silhouettes, gentle edges, matte stylized materials, and readable color. Characters become themselves through what they wear and carry - scarves, bags, and explorer-kit accessories that sit cleanly on those clay forms.
+Bodies, creatures, props, and environments are locked to a soft clay-toon look: rounded silhouettes, gentle edges, matte stylized materials, and readable color. The outfit and accessory language is locked too, so characters become themselves through what they wear and carry - scarves, bags, and explorer-kit accessories that sit cleanly on those clay forms.
 
 For the full visual rules, palette notes, and placeholder boundaries, read the [Art Bible](docs/ART_BIBLE.md).
 
@@ -53,7 +53,7 @@ npm run build
 npm run preview
 ```
 
-`npm test` runs the pure game-logic tests with Vitest. `npm run build` typechecks and creates the Vite production build. The eventual hosted path is planned for [5432wire.com/whisker-world](https://5432wire.com/whisker-world); it is not a live game destination yet.
+`npm test` runs the pure game-logic tests with Vitest. `npm run build` typechecks and creates the Vite production build. The eventual hosted path is planned for 5432wire.com/whisker-world; it is not a live game destination yet.
 
 ## Find your way around
 
