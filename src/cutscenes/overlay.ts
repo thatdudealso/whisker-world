@@ -2,7 +2,7 @@
  * DOM overlay presentation for the cutscene beat player.
  *
  * Skippable card style, matching the no-framework HUD approach: one fixed
- * full-screen layer whose background is a solid "plate" color per biomeTag,
+ * full-screen layer whose background is a storybook gradient per biomeTag,
  * a centered card with title / speaker / line / beat counter, and a Skip
  * button. Space / Enter / click advance; Esc (or Skip) jumps to finished.
  * The overlay tears itself down when the player finishes.
@@ -10,12 +10,12 @@
 import type { CutsceneBeat } from "../content/cutscenes/chapter1";
 import { CutscenePlayer, type CutsceneHooks } from "./player";
 
-/** Solid-color plates per WW-D4 setting tag (greybox stand-ins for boards). */
+/** Warm gradient plates per WW-D4 setting tag. */
 const PLATE_COLORS: Record<string, string> = {
-  "glowing-forest": "#14322a",
-  "neon-shadow": "#2b1136",
-  "crew-den": "#33241a",
-  rift: "#191347",
+  "glowing-forest": "linear-gradient(135deg, #102c2a, #315c4c 55%, #10202c)",
+  "neon-shadow": "linear-gradient(135deg, #241331, #5d315c 55%, #181b35)",
+  "crew-den": "linear-gradient(135deg, #38291e, #796248 55%, #253a39)",
+  rift: "linear-gradient(135deg, #171336, #4c2e79 55%, #101b39)",
 };
 const PLATE_FALLBACK = "#20202a";
 
@@ -24,7 +24,9 @@ const CARD_STYLE = [
   "margin:0 24px",
   "padding:28px 32px",
   "border-radius:14px",
-  "background:rgba(0,0,0,0.55)",
+  "background:linear-gradient(145deg,rgba(20,38,40,0.94),rgba(16,24,38,0.91))",
+  "border:1px solid rgba(243,224,179,0.24)",
+  "box-shadow:0 24px 90px rgba(0,0,0,0.34),inset 0 1px rgba(255,255,255,0.12)",
   "color:#eee",
   "font:16px/1.6 system-ui,sans-serif",
   "text-align:center",
@@ -96,7 +98,7 @@ export function playCutsceneOverlay(
       layer.style.background = PLATE_COLORS[beat.biomeTag] ?? PLATE_FALLBACK;
       counter.textContent = `${beatNumber} / ${beatCount}`;
       title.textContent = beat.title;
-      line.textContent = `“${beat.line}”`;
+      line.textContent = `"${beat.line}"`;
       speaker.textContent = `- ${beat.speaker}`;
     },
     onFinished: (skipped) => {

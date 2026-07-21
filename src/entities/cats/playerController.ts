@@ -1,5 +1,5 @@
 /**
- * PlayerController: owns the greybox cat mesh and the pure locomotion state.
+ * PlayerController: owns the clay-toon cat mesh and the pure locomotion state.
  * Each frame it feeds the input snapshot into `stepLocomotion` and applies
  * the resulting position / yaw to the mesh group.
  *
@@ -10,7 +10,7 @@
 import * as THREE from "three";
 import type { AabbObstacle } from "../../core/math";
 import { DEFAULT_CAT_ID, getCat, tuningFor, type CatDefinition } from "../../content/cats";
-import { applyCatAppearance, createCatPlaceholder } from "./catPlaceholder";
+import { applyCatAppearance, createCatModel } from "./catPlaceholder";
 import {
   createLocomotionState,
   stepLocomotion,
@@ -29,14 +29,14 @@ export class PlayerController {
     cat: CatDefinition = getCat(DEFAULT_CAT_ID),
     spawn?: SpawnPose,
   ) {
-    this.group = createCatPlaceholder(cat);
+    this.group = createCatModel(cat);
     this.state = createLocomotionState(spawn);
     this.tuning = tuningFor(cat);
     this.group.position.set(this.state.x, this.state.y, this.state.z);
     this.group.rotation.y = this.state.yaw;
   }
 
-  /** Swap to another roster cat: re-skin the placeholder, apply its tuning. */
+  /** Swap to another roster cat: rebuild the model, apply its tuning. */
   setCat(cat: CatDefinition): void {
     applyCatAppearance(this.group, cat);
     this.tuning = tuningFor(cat);
@@ -44,6 +44,14 @@ export class PlayerController {
 
   update(dt: number, input: LocomotionInput, obstacles: readonly AabbObstacle[]): void {
     stepLocomotion(this.state, input, obstacles, this.tuning, dt);
+    this.group.position.set(this.state.x, this.state.y, this.state.z);
+    this.group.rotation.y = this.state.yaw;
+  }
+
+  /** Return the cat to a chapter spawn for a fresh run or replay. */
+  reset(spawn?: SpawnPose): void {
+    const next = createLocomotionState(spawn);
+    Object.assign(this.state, next);
     this.group.position.set(this.state.x, this.state.y, this.state.z);
     this.group.rotation.y = this.state.yaw;
   }
