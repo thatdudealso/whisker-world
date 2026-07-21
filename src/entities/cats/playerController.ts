@@ -2,14 +2,18 @@
  * PlayerController: owns the greybox cat mesh and the pure locomotion state.
  * Each frame it feeds the input snapshot into `stepLocomotion` and applies
  * the resulting position / yaw to the mesh group.
+ *
+ * The controller reads the active roster entry (colors, accessory marker,
+ * small tuning deltas); swapping cats re-skins the same group in place so
+ * position, velocity, and camera follow are preserved mid-run.
  */
 import * as THREE from "three";
 import type { AabbObstacle } from "../../core/math";
-import { createCatPlaceholder } from "./catPlaceholder";
+import { DEFAULT_CAT_ID, getCat, tuningFor, type CatDefinition } from "../../content/cats";
+import { applyCatAppearance, createCatPlaceholder } from "./catPlaceholder";
 import {
   createLocomotionState,
   stepLocomotion,
-  DEFAULT_TUNING,
   type LocomotionInput,
   type LocomotionState,
   type PlayerTuning,
@@ -19,14 +23,23 @@ import {
 export class PlayerController {
   readonly group: THREE.Group;
   private readonly state: LocomotionState;
-  private readonly tuning: PlayerTuning;
+  private tuning: PlayerTuning;
 
-  constructor(spawn?: SpawnPose, tuning: PlayerTuning = DEFAULT_TUNING) {
-    this.group = createCatPlaceholder();
+  constructor(
+    cat: CatDefinition = getCat(DEFAULT_CAT_ID),
+    spawn?: SpawnPose,
+  ) {
+    this.group = createCatPlaceholder(cat);
     this.state = createLocomotionState(spawn);
-    this.tuning = tuning;
+    this.tuning = tuningFor(cat);
     this.group.position.set(this.state.x, this.state.y, this.state.z);
     this.group.rotation.y = this.state.yaw;
+  }
+
+  /** Swap to another roster cat: re-skin the placeholder, apply its tuning. */
+  setCat(cat: CatDefinition): void {
+    applyCatAppearance(this.group, cat);
+    this.tuning = tuningFor(cat);
   }
 
   update(dt: number, input: LocomotionInput, obstacles: readonly AabbObstacle[]): void {

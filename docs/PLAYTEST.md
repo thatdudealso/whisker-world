@@ -45,6 +45,16 @@ Use before claiming a build is playable. Expand as features land.
 - [ ] After finishing or skipping, reload does NOT replay the intro
 - [ ] `?cutscene=1` replays the intro even after it was seen
 - [ ] Movement, sprint, jump, and camera orbit all work normally once cards close
+### Roster / cat swap
+
+- [ ] Game starts as Luna (calico tint, gold scarf band), name + role chip top right
+- [ ] `]` / `[` cycle the six cats in roster order and wrap at both ends
+- [ ] `1`-`6` jump straight to each cat; body tint and scarf band visibly change
+- [ ] Swapping mid-run keeps position and momentum (no teleport, no camera snap)
+- [ ] Dash sprints visibly faster than Luna; Blaze feels a touch slower
+- [ ] Reloading the tab keeps the last picked cat (sessionStorage)
+- [ ] Chapter chips show under the title; only Whisperleaf Forest is unlocked
+- [ ] Clicking a locked chapter shows a "coming soon" toast, nothing else happens
 
 ## Mobile (later)
 

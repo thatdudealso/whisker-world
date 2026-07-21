@@ -24,6 +24,7 @@ export function createHud(root: HTMLElement): void {
   const hint = document.createElement("div");
   hint.style.cssText =
     CHIP_STYLE + ";bottom:10px;left:50%;transform:translateX(-50%);font-size:13px";
-  hint.textContent = "WASD / Arrows move · Space jump · Shift sprint · Q / E orbit camera";
+  hint.textContent =
+    "WASD / Arrows move · Space jump · Shift sprint · Q / E orbit camera · [ ] swap cat";
   root.appendChild(hint);
 }

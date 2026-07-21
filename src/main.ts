@@ -12,6 +12,8 @@ import { createHud } from "./ui/hud";
 import { CHAPTER1_BEATS } from "./content/cutscenes/chapter1";
 import { playCutsceneOverlay } from "./cutscenes/overlay";
 import { getIntroStorage, markIntroSeen, shouldPlayIntro } from "./cutscenes/introGate";
+import { createRosterHud } from "./ui/rosterHud";
+import { CatSelection } from "./systems/catSelection";
 
 const MAX_DT = 0.05; // clamp huge frames (tab refocus) so physics stays stable
 
@@ -31,7 +33,10 @@ app.appendChild(renderer.domElement);
 
 // The chapter owns the scene mood: background, fog, and all lights.
 const world = buildForestChapter1(scene);
-const player = new PlayerController(world.spawn);
+const selection = new CatSelection();
+const player = new PlayerController(selection.active, world.spawn);
+selection.subscribe((cat) => player.setCat(cat));
+createRosterHud(document.body, selection);
 scene.add(player.group);
 const cameraRig = new CameraRig(window.innerWidth / window.innerHeight);
 const input = new KeyboardInput();
@@ -40,7 +45,7 @@ input.attach(window);
 if (import.meta.env.DEV) {
   // Dev-only playtest hook: lets the browser console / E2E drivers read live
   // player state. Tree-shaken out of production builds.
-  (window as unknown as Record<string, unknown>).__ww = { player };
+  (window as unknown as Record<string, unknown>).__ww = { player, selection };
 }
 
 window.addEventListener("resize", () => {

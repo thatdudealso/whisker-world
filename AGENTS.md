@@ -6,6 +6,7 @@ Guidance for coding agents and humans working in this repo.
 
 - **3D only.** Three.js now; Rapier physics next. **Not** Orbital rails. **Not** 2D / Phaser.
 - Semi-open cat adventure: chapter hubs with free movement, not linear-only rails.
+- Cast is **LOCKED** (captain lavish board **WW-D1**): six cats as data in `src/content/cats.ts`, chapter table stub in `src/content/chapters.ts`. Do not rename cats without a needs-decision; roster table lives in [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md).
 - Art style is **LOCKED** (captain lavish board **WW-D0-art**): **hybrid A + B** - clay / soft toon 3D bodies & world, with the B **outfit & accessory** language (scarves, bags, explorer-kit props) for wardrobe. Bodies/world stay clay/toon; wardrobe reads from B. See [docs/ART_BIBLE.md](docs/ART_BIBLE.md). Greybox primitives are still fine until clay/toon assets are produced.
 
 ## Hosting (later - do not provision here)

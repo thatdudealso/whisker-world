@@ -8,18 +8,18 @@ Six cats. One secret syndicate. A semi-open 3D world of chapter-scale maps where
 
 ## Six cats
 
-Placeholder roster for systems and content hooks. Names and kits may change after art / story boards.
+Roster **LOCKED** (captain lavish board **WW-D1**). Do not rename without a needs-decision. Source of truth for stats and kits is [`src/content/cats.ts`](../src/content/cats.ts).
 
-| # | Cat | Role (working) | Play fantasy |
-|---|-----|----------------|--------------|
-| 1 | TBD | Scout | Fast, vertical, map awareness |
-| 2 | TBD | Brawler | Close combat, crowd control |
-| 3 | TBD | Trickster | Distraction, gadgets, stealth |
-| 4 | TBD | Support | Buffs, rescue, team utility |
-| 5 | TBD | Heavy | Tank, smash, slow power |
-| 6 | TBD | Mystic | Rift-touched abilities, puzzle keys |
+| id | Cat | Role | Kit language (wardrobe tags) |
+|----|-----|------|------------------------------|
+| `luna` | Luna | Explorer | calico, star scarf, bell, leaf satchel |
+| `shadow` | Shadow | Stealth | gray tuxedo, charcoal scarf, utility pouch |
+| `blaze` | Blaze | Tank | ginger tabby stocky, red bandana, satchel, armor bit |
+| `misty` | Misty | Agile puzzle | siamese/snowshoe biped clay, teal scarf, shell, wave pouch |
+| `willow` | Willow | Support | fluffy ragdoll, pastel knit scarf, herbal satchel |
+| `dash` | Dash | Speed | bengal biped sprinter, boyish smirk, racing scarf, goggles, pouch |
 
-Captain may rename / retheme via story and art boards; keep **six playable identities** as the structural target.
+All six share the locked locomotion feel; per-cat deltas stay small and data-driven (Dash sprints a touch faster, Blaze is a touch slower). Luna is the default starting cat.
 
 ## Syndicate
 
@@ -33,7 +33,7 @@ See [STORY_SYNDICATE.md](STORY_SYNDICATE.md) for the Rift frame and the chapter 
 - Movement is free within the chapter bounds (ground + vertical play later).
 - **Not Orbital rails:** no exclusive fixed-camera on-rails locomotion as the core loop.
 - Progress gates (story, abilities, keys) unlock new routes; backtracking is encouraged.
-- Multi-chapter world map / select is later; Phase 0 is greybox locomotion only.
+- Multi-chapter world map / select is later; Phase 0 includes a chapter-select stub alongside the greybox locomotion slice.
 - **Chapter 1 greybox exists**: Whimsical Glowing Forest (Luna's home, biome locked WW-D2) - spawn clearing, terraced overlook, rift-crack shard, glowing mushrooms, starlight trails. Greybox primitives only (`src/world/chapters/`); clay/toon art comes later per [ART_BIBLE.md](ART_BIBLE.md).
 
 ## Out of scope (Phase 0)
