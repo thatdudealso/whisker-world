@@ -33,7 +33,7 @@ See [STORY_SYNDICATE.md](STORY_SYNDICATE.md) for the Rift frame and the chapter 
 - Movement is free within the chapter bounds (ground + vertical play later).
 - **Not Orbital rails:** no exclusive fixed-camera on-rails locomotion as the core loop.
 - Progress gates (story, abilities, keys) unlock new routes; backtracking is encouraged.
-- Multi-chapter world map / select is later; Phase 0 is greybox locomotion only.
+- Multi-chapter world map / select is later; Phase 0 includes a chapter-select stub alongside the greybox locomotion slice.
 - **Chapter 1 greybox exists**: Whimsical Glowing Forest (Luna's home, biome locked WW-D2) - spawn clearing, terraced overlook, rift-crack shard, glowing mushrooms, starlight trails. Greybox primitives only (`src/world/chapters/`); clay/toon art comes later per [ART_BIBLE.md](ART_BIBLE.md).
 
 ## Out of scope (Phase 0)
