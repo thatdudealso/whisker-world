@@ -11,7 +11,7 @@ import { buildForestChapter1 } from "./world/chapters/forestChapter1";
 import { createHud } from "./ui/hud";
 import { CHAPTER1_BEATS } from "./content/cutscenes/chapter1";
 import { playCutsceneOverlay } from "./cutscenes/overlay";
-import { markIntroSeen, shouldPlayIntro } from "./cutscenes/introGate";
+import { getIntroStorage, markIntroSeen, shouldPlayIntro } from "./cutscenes/introGate";
 
 const MAX_DT = 0.05; // clamp huge frames (tab refocus) so physics stays stable
 
@@ -53,11 +53,12 @@ window.addEventListener("resize", () => {
 // Chapter 1 intro: autoplay on first visit (or when forced via ?cutscene=1),
 // with gameplay input gated off until the cards finish or are skipped.
 // See docs/TECH.md "Cutscenes".
-if (shouldPlayIntro(window.location.search, window.localStorage)) {
+const introStorage = getIntroStorage();
+if (shouldPlayIntro(window.location.search, introStorage)) {
   input.setEnabled(false);
   playCutsceneOverlay(document.body, CHAPTER1_BEATS, {
     onComplete: () => {
-      markIntroSeen(window.localStorage);
+      markIntroSeen(introStorage);
       input.setEnabled(true);
     },
   });

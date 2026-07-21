@@ -15,6 +15,25 @@ export interface StorageLike {
   setItem(key: string, value: string): void;
 }
 
+const NOOP_STORAGE: StorageLike = {
+  getItem: () => null,
+  setItem: () => {},
+};
+
+/**
+ * Resolve a StorageLike from window.localStorage, tolerating environments where
+ * even accessing the property throws (Firefox with cookies disabled, sandboxed
+ * iframe without allow-same-origin). Falls back to a no-op store so the game
+ * still boots and the intro simply replays each visit.
+ */
+export function getIntroStorage(): StorageLike {
+  try {
+    return window.localStorage ?? NOOP_STORAGE;
+  } catch {
+    return NOOP_STORAGE;
+  }
+}
+
 /**
  * Decide whether the chapter 1 intro should play.
  * @param search window.location.search (e.g. "?cutscene=1")
