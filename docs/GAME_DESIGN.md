@@ -25,7 +25,7 @@ Captain may rename / retheme via story and art boards; keep **six playable ident
 
 The cats are (or become) entangled with a **syndicate** - not pure cartoon villains, not pure heroes. The syndicate is the social spine: jobs, rival cells, loyalty tests, and shared goals that justify multi-cat play and chapter handoffs.
 
-See [STORY_SYNDICATE.md](STORY_SYNDICATE.md) for Rift frame and villain landing prompts (captain-fills-on-lavish).
+See [STORY_SYNDICATE.md](STORY_SYNDICATE.md) for the Rift frame and the chapter 1 villain landing (filled from the WW-D3 / WW-D4 lock).
 
 ## Semi-open chapters
 
