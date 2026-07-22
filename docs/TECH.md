@@ -38,7 +38,7 @@ Conventions:
 - **Chapters own scene mood**: background, fog, and every light are created by the chapter builder, not `main.ts`. Swapping chapters swaps atmosphere.
 - **Terrain is flat ground + AABB terraces** (no heightfield): stays compatible with the kinematic controller; Rapier remains "planned next".
 - **Playable bounds unchanged**: radius 19 clamp (`DEFAULT_TUNING.boundsRadius`), visual disc radius 20.
-- **Light budget**: 1 hemisphere + 1 directional + 4 distance-limited point lights; other glow is emissive material, shared per prop group. Keep chapter builders in this ballpark for laptop perf.
+- **Light budget**: 1 hemisphere + 2 directional + 4 distance-limited point lights; other glow is emissive material, shared per prop group. Keep chapter builders in this ballpark for laptop perf.
 
 ## Cutscenes
 

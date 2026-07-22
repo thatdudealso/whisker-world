@@ -166,4 +166,3 @@ export class PlayerController {
     return this.group.position;
   }
 }
-
