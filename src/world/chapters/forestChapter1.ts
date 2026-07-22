@@ -1,15 +1,19 @@
 /**
  * Chapter 1 - Whimsical Whisperleaf Glowing Forest.
  *
- * This is a code-built art pass rather than a greybox: rounded clay terraces,
- * faceted moss stones, layered tree canopies, real mushroom caps, fireflies,
- * and warm emissive landmarks share one soft night palette. Collision remains
- * in forestLayout.ts so the playable footprint stays easy to test.
+ * This is a code-built art pass rather than a greybox: rounded clay-toon
+ * terraces, faceted moss stones, layered tree canopies, real mushroom caps,
+ * a faceted Rift crystal cluster, fireflies, and warm emissive landmarks
+ * share one warm night palette, lit with real shadows and finished with a
+ * bloom pass in main.ts. Collision remains in forestLayout.ts so the
+ * playable footprint stays easy to test.
  */
 import * as THREE from "three";
 import type { AabbObstacle } from "../../core/math";
 import type { SpawnPose } from "../../entities/cats/locomotion";
 import type { ObjectiveId } from "../../systems/objectives";
+import { createGroundTexture } from "../groundTexture";
+import { clayMaterial, facetMaterial } from "../materials";
 import {
   FOREST_GROUND_RADIUS,
   FOREST_SPAWN,
@@ -23,8 +27,8 @@ import {
   type BoxSpec,
 } from "./forestLayout";
 
-const NIGHT_SKY = 0x101b2a;
-const DEEP_MOSS = 0x1b382f;
+const NIGHT_SKY = 0x18293c;
+const FOG_COLOR = 0x24384e;
 const MINT_GLOW = 0x9ce7bd;
 const TEAL_GLOW = 0x66d8c5;
 const VIOLET_GLOW = 0xb87cff;
@@ -36,27 +40,10 @@ export interface ForestChapter {
   update(dt: number, activeObjective: ObjectiveId | null): void;
 }
 
-function softMaterial(color: THREE.ColorRepresentation, options: { emissive?: THREE.ColorRepresentation; emissiveIntensity?: number; opacity?: number } = {}): THREE.MeshStandardMaterial {
-  const parameters: THREE.MeshStandardMaterialParameters = {
-    color,
-    roughness: 0.92,
-    metalness: 0,
-    flatShading: false,
-    emissive: options.emissive,
-    emissiveIntensity: options.emissiveIntensity,
-    transparent: options.opacity !== undefined,
-    opacity: options.opacity,
-  };
-  if (options.emissive === undefined) delete parameters.emissive;
-  if (options.emissiveIntensity === undefined) delete parameters.emissiveIntensity;
-  if (options.opacity === undefined) delete parameters.opacity;
-  return new THREE.MeshStandardMaterial(parameters);
-}
-
 function addMesh(
   scene: THREE.Scene | THREE.Group,
   geometry: THREE.BufferGeometry,
-  meshMaterial: THREE.Material,
+  meshMaterial: THREE.Material | THREE.Material[],
   position: THREE.Vector3,
   scale?: THREE.Vector3,
 ): THREE.Mesh {
@@ -69,10 +56,15 @@ function addMesh(
   return mesh;
 }
 
-function createRoundedPrism(spec: BoxSpec, meshMaterial: THREE.Material): THREE.Mesh {
+/**
+ * Rounded, two-tone terrace slab: a mossy cap (material index 0, the
+ * extrude's front/back caps) over a darker bark-toned side wall (index 1).
+ * A generous bevel keeps it reading as a sculpted step, not a stacked box.
+ */
+function createRoundedPrism(spec: BoxSpec, sideMaterial: THREE.Material, capMaterial: THREE.Material): THREE.Mesh {
   const halfX = spec.sizeX / 2;
   const halfZ = spec.sizeZ / 2;
-  const radius = Math.min(0.22, halfX * 0.28, halfZ * 0.28);
+  const radius = Math.min(0.5, halfX * 0.4, halfZ * 0.4);
   const shape = new THREE.Shape();
   shape.moveTo(-halfX + radius, -halfZ);
   shape.lineTo(halfX - radius, -halfZ);
@@ -86,17 +78,48 @@ function createRoundedPrism(spec: BoxSpec, meshMaterial: THREE.Material): THREE.
   const geometry = new THREE.ExtrudeGeometry(shape, {
     depth: spec.height,
     bevelEnabled: true,
-    bevelSegments: 3,
-    bevelSize: Math.min(0.12, radius * 0.55),
-    bevelThickness: Math.min(0.1, spec.height * 0.16),
-    curveSegments: 3,
+    bevelSegments: 6,
+    bevelSize: Math.min(0.22, radius * 0.85),
+    bevelThickness: Math.min(0.22, spec.height * 0.22),
+    curveSegments: 8,
   });
   geometry.rotateX(-Math.PI / 2);
-  const mesh = new THREE.Mesh(geometry, meshMaterial);
+  const mesh = new THREE.Mesh(geometry, [capMaterial, sideMaterial]);
   mesh.position.set(spec.centerX, 0, spec.centerZ);
   mesh.castShadow = true;
   mesh.receiveShadow = true;
   return mesh;
+}
+
+/** A tiny cluster of blade-like tufts, planted along a terrace edge. */
+function addGrassTuft(scene: THREE.Scene, x: number, z: number, y: number, material: THREE.Material): void {
+  const bladeCount = 3;
+  for (let i = 0; i < bladeCount; i += 1) {
+    const angle = (i / bladeCount) * Math.PI * 2 + Math.random() * 0.6;
+    const height = 0.16 + Math.random() * 0.1;
+    const blade = addMesh(
+      scene,
+      new THREE.ConeGeometry(0.035, height, 4),
+      material,
+      new THREE.Vector3(x + Math.cos(angle) * 0.05, y + height / 2, z + Math.sin(angle) * 0.05),
+    );
+    blade.rotation.z = Math.cos(angle) * 0.3;
+    blade.rotation.x = Math.sin(angle) * 0.3;
+  }
+}
+
+function addTerraceFringe(scene: THREE.Scene, spec: BoxSpec, material: THREE.Material): void {
+  const halfX = spec.sizeX / 2;
+  const halfZ = spec.sizeZ / 2;
+  const corners: Array<[number, number]> = [
+    [-halfX * 0.82, -halfZ * 0.82],
+    [halfX * 0.82, -halfZ * 0.4],
+    [-halfX * 0.4, halfZ * 0.82],
+    [halfX * 0.7, halfZ * 0.7],
+  ];
+  for (const [ox, oz] of corners) {
+    addGrassTuft(scene, spec.centerX + ox, spec.centerZ + oz, spec.height, material);
+  }
 }
 
 function addStarTrail(
@@ -105,23 +128,25 @@ function addStarTrail(
   to: { x: number; z: number },
   count: number,
   color: THREE.ColorRepresentation,
-): void {
-  const dotGeometry = new THREE.SphereGeometry(0.1, 8, 6);
-  const dotMaterial = softMaterial(color, { emissive: color, emissiveIntensity: 1.4 });
+): readonly THREE.Mesh[] {
+  const dotGeometry = new THREE.SphereGeometry(0.11, 8, 6);
+  const dots: THREE.Mesh[] = [];
   for (let index = 0; index < count; index += 1) {
     const t = (index + 0.5) / count;
     const wobble = Math.sin(t * Math.PI * 2.4) * 0.34;
-    addMesh(
+    const dot = addMesh(
       scene,
       dotGeometry,
-      dotMaterial,
+      clayMaterial(color, { emissive: color, emissiveIntensity: 1.6 }),
       new THREE.Vector3(
         from.x + (to.x - from.x) * t + wobble,
         0.09 + Math.sin(t * Math.PI) * 0.04,
         from.z + (to.z - from.z) * t,
       ),
     );
+    dots.push(dot);
   }
+  return dots;
 }
 
 function addTree(scene: THREE.Scene, spec: (typeof TREE_TRUNKS)[number], trunkMaterial: THREE.Material, leafMaterial: THREE.Material, leafLightMaterial: THREE.Material): void {
@@ -163,8 +188,8 @@ function addMushroom(scene: THREE.Scene, spec: (typeof GLOW_MUSHROOMS)[number], 
 }
 
 function addFlowerCluster(scene: THREE.Scene, x: number, z: number, color: THREE.ColorRepresentation): void {
-  const stemMaterial = softMaterial(0x5d9060);
-  const flowerMaterial = softMaterial(color, { emissive: color, emissiveIntensity: 0.35 });
+  const stemMaterial = clayMaterial(0x5d9060);
+  const flowerMaterial = clayMaterial(color, { emissive: color, emissiveIntensity: 0.5 });
   for (let index = 0; index < 3; index += 1) {
     const offset = index - 1;
     addMesh(scene, new THREE.CylinderGeometry(0.018, 0.025, 0.35, 5), stemMaterial, new THREE.Vector3(x + offset * 0.12, 0.18, z + Math.sin(index) * 0.1));
@@ -175,37 +200,68 @@ function addFlowerCluster(scene: THREE.Scene, x: number, z: number, color: THREE
 function addMarker(scene: THREE.Scene, position: THREE.Vector3, color: THREE.ColorRepresentation): THREE.Group {
   const group = new THREE.Group();
   group.position.copy(position);
-  const ring = addMesh(group, new THREE.TorusGeometry(0.62, 0.045, 8, 28), softMaterial(color, { emissive: color, emissiveIntensity: 1.3 }), new THREE.Vector3(0, 0, 0));
+  const ring = addMesh(group, new THREE.TorusGeometry(0.62, 0.045, 8, 28), clayMaterial(color, { emissive: color, emissiveIntensity: 1.4 }), new THREE.Vector3(0, 0, 0));
   ring.rotation.x = Math.PI / 2;
-  addMesh(group, new THREE.CylinderGeometry(0.028, 0.07, 1.35, 8), softMaterial(color, { emissive: color, emissiveIntensity: 1.1, opacity: 0.36 }), new THREE.Vector3(0, 0.68, 0));
-  addMesh(group, new THREE.SphereGeometry(0.13, 10, 8), softMaterial(0xffffff, { emissive: color, emissiveIntensity: 1.8 }), new THREE.Vector3(0, 1.42, 0));
+  addMesh(group, new THREE.CylinderGeometry(0.028, 0.07, 1.35, 8), clayMaterial(color, { emissive: color, emissiveIntensity: 1.2, opacity: 0.36 }), new THREE.Vector3(0, 0.68, 0));
+  addMesh(group, new THREE.SphereGeometry(0.13, 10, 8), clayMaterial(0xffffff, { emissive: color, emissiveIntensity: 2 }), new THREE.Vector3(0, 1.42, 0));
   scene.add(group);
   return group;
 }
 
+/** Faceted crystal shard: an elongated flat-shaded gem, not a smooth cone. */
+function addRiftCrystal(scene: THREE.Scene, position: THREE.Vector3, scaleY: number, material: THREE.Material): THREE.Mesh {
+  const mesh = addMesh(
+    scene,
+    new THREE.IcosahedronGeometry(0.42, 0),
+    material,
+    position,
+    new THREE.Vector3(0.62, scaleY, 0.62),
+  );
+  mesh.rotation.set(Math.random() * 0.4, Math.random() * Math.PI, Math.random() * 0.4);
+  return mesh;
+}
+
 export function buildForestChapter1(scene: THREE.Scene): ForestChapter {
   scene.background = new THREE.Color(NIGHT_SKY);
-  scene.fog = new THREE.FogExp2(NIGHT_SKY, 0.021);
+  scene.fog = new THREE.FogExp2(FOG_COLOR, 0.017);
 
-  const hemi = new THREE.HemisphereLight(0x7287ad, 0x182c24, 2.35);
+  const hemi = new THREE.HemisphereLight(0x9fb4d8, 0x2f4f3e, 2.6);
   scene.add(hemi);
-  const moon = new THREE.DirectionalLight(0xb6c8ee, 1.5);
+  const moon = new THREE.DirectionalLight(0xcfe0ff, 1.85);
   moon.position.set(-8, 14, -7);
   moon.castShadow = true;
-  moon.shadow.mapSize.set(1024, 1024);
+  moon.shadow.mapSize.set(2048, 2048);
   moon.shadow.camera.left = -24;
   moon.shadow.camera.right = 24;
   moon.shadow.camera.top = 24;
   moon.shadow.camera.bottom = -24;
+  moon.shadow.camera.near = 1;
+  moon.shadow.camera.far = 45;
+  moon.shadow.bias = -0.0018;
+  moon.shadow.radius = 2.4;
   scene.add(moon);
 
-  const ground = addMesh(scene, new THREE.CircleGeometry(FOREST_GROUND_RADIUS, 96), softMaterial(DEEP_MOSS), new THREE.Vector3(0, -0.04, 0));
+  // Warm rim fill from the opposite side keeps shadowed faces from crushing
+  // to pure black - a cheap, shadowless "second light" for a friendlier read.
+  const fill = new THREE.DirectionalLight(0xffb37a, 0.4);
+  fill.position.set(10, 7, 9);
+  scene.add(fill);
+
+  // `map` is a multiplier on `color`: keep the base color white so the
+  // painted moss texture carries its own tones instead of being crushed
+  // toward black by a second dark multiply.
+  const ground = addMesh(
+    scene,
+    new THREE.CircleGeometry(FOREST_GROUND_RADIUS, 96),
+    clayMaterial(0xffffff, { map: createGroundTexture() }),
+    new THREE.Vector3(0, -0.04, 0),
+  );
   ground.rotation.x = -Math.PI / 2;
   ground.receiveShadow = true;
 
   // Low moss mounds break up the ground plane without becoming collision
   // geometry. Their repeating soft forms establish the handcrafted world.
-  const moundMaterial = softMaterial(0x2b513d);
+  const moundMaterial = clayMaterial(0x2b513d);
   for (const mound of [
     [-7, 7, 2.4, 0.25], [6, 7, 2.8, 0.3], [-8, -2, 2.6, 0.22], [8, -7, 3.2, 0.3], [0, 9, 3.8, 0.25],
     [-12, 11, 2.4, 0.18], [12, -11, 2.8, 0.2],
@@ -213,29 +269,31 @@ export function buildForestChapter1(scene: THREE.Scene): ForestChapter {
     addMesh(scene, new THREE.SphereGeometry(1, 14, 8), moundMaterial, new THREE.Vector3(mound[0], mound[3], mound[1]), new THREE.Vector3(mound[2], 0.24, mound[2] * 0.85));
   }
 
-  const stoneMaterial = softMaterial(0x516878);
-  const stoneLightMaterial = softMaterial(0x789080);
+  // Faceted moss stones: flat-shaded so the facets actually read as facets.
+  const stoneMaterial = facetMaterial(0x5c7264);
+  const stoneMossMaterial = facetMaterial(0x7c9a72);
   for (const spec of PATH_ROCKS) {
-    addMesh(scene, new THREE.IcosahedronGeometry(0.62, 1), stoneMaterial, new THREE.Vector3(spec.centerX, spec.height * 0.35, spec.centerZ), new THREE.Vector3(spec.sizeX / 1.15, spec.height / 1.1, spec.sizeZ / 1.15));
-    addMesh(scene, new THREE.SphereGeometry(0.2, 8, 6), stoneLightMaterial, new THREE.Vector3(spec.centerX - spec.sizeX * 0.2, spec.height * 0.68, spec.centerZ - spec.sizeZ * 0.18), new THREE.Vector3(1.4, 0.35, 0.7));
+    addMesh(scene, new THREE.IcosahedronGeometry(0.62, 0), stoneMaterial, new THREE.Vector3(spec.centerX, spec.height * 0.35, spec.centerZ), new THREE.Vector3(spec.sizeX / 1.15, spec.height / 1.1, spec.sizeZ / 1.15));
+    addMesh(scene, new THREE.IcosahedronGeometry(0.2, 0), stoneMossMaterial, new THREE.Vector3(spec.centerX - spec.sizeX * 0.2, spec.height * 0.68, spec.centerZ - spec.sizeZ * 0.18), new THREE.Vector3(1.4, 0.5, 0.9));
   }
 
-  const stepMaterial = softMaterial(0x426453);
-  const stepTopMaterial = softMaterial(0x5e8064);
+  const stepSideMaterial = clayMaterial(0x3c5a45);
+  const stepCapMaterial = clayMaterial(0x649268);
+  const tuftMaterial = clayMaterial(0x4d7a55);
   for (const spec of OVERLOOK_STEPS) {
-    scene.add(createRoundedPrism(spec, stepMaterial));
-    addMesh(scene, new THREE.SphereGeometry(0.35, 10, 6), stepTopMaterial, new THREE.Vector3(spec.centerX - spec.sizeX * 0.25, spec.height + 0.04, spec.centerZ + spec.sizeZ * 0.16), new THREE.Vector3(1.8, 0.12, 0.9));
+    scene.add(createRoundedPrism(spec, stepSideMaterial, stepCapMaterial));
+    addTerraceFringe(scene, spec, tuftMaterial);
   }
 
-  const spawnRing = addMesh(scene, new THREE.TorusGeometry(0.95, 0.08, 10, 36), softMaterial(0x356c57, { emissive: MINT_GLOW, emissiveIntensity: 1.3 }), new THREE.Vector3(FOREST_SPAWN.x, 0.04, FOREST_SPAWN.z));
+  const spawnRing = addMesh(scene, new THREE.TorusGeometry(0.95, 0.08, 10, 36), clayMaterial(0x356c57, { emissive: MINT_GLOW, emissiveIntensity: 1.5 }), new THREE.Vector3(FOREST_SPAWN.x, 0.04, FOREST_SPAWN.z));
   spawnRing.rotation.x = Math.PI / 2;
-  addMesh(scene, new THREE.TorusGeometry(0.68, 0.025, 8, 32), softMaterial(0xf4d28b, { emissive: WARM_LANTERN, emissiveIntensity: 0.75 }), new THREE.Vector3(FOREST_SPAWN.x, 0.06, FOREST_SPAWN.z)).rotation.x = Math.PI / 2;
-  const spawnLight = new THREE.PointLight(MINT_GLOW, 5.5, 10, 2);
+  addMesh(scene, new THREE.TorusGeometry(0.68, 0.025, 8, 32), clayMaterial(0xf4d28b, { emissive: WARM_LANTERN, emissiveIntensity: 0.9 }), new THREE.Vector3(FOREST_SPAWN.x, 0.06, FOREST_SPAWN.z)).rotation.x = Math.PI / 2;
+  const spawnLight = new THREE.PointLight(MINT_GLOW, 4.2, 10, 2);
   spawnLight.position.set(FOREST_SPAWN.x, 1.4, FOREST_SPAWN.z - 0.8);
   scene.add(spawnLight);
 
   // Rift crystal cluster: collision is the shared layout footprint; the art
-  // is three irregular crystals around a softly glowing fissure.
+  // is a faceted gem cluster around a softly glowing ground fissure.
   const crackShape = new THREE.Shape();
   crackShape.moveTo(-1.7, -0.22);
   crackShape.lineTo(-0.4, -0.08);
@@ -244,46 +302,45 @@ export function buildForestChapter1(scene: THREE.Scene): ForestChapter {
   crackShape.lineTo(0.55, 0.2);
   crackShape.lineTo(-0.1, 0.42);
   crackShape.closePath();
-  const crack = addMesh(scene, new THREE.ShapeGeometry(crackShape), softMaterial(0x24133a, { emissive: VIOLET_GLOW, emissiveIntensity: 0.65 }), new THREE.Vector3(RIFT_SHARD.centerX, 0.025, RIFT_SHARD.centerZ));
+  const crack = addMesh(scene, new THREE.ShapeGeometry(crackShape), clayMaterial(0x24133a, { emissive: VIOLET_GLOW, emissiveIntensity: 0.8 }), new THREE.Vector3(RIFT_SHARD.centerX, 0.025, RIFT_SHARD.centerZ));
   crack.rotation.x = -Math.PI / 2;
-  const riftCrystalMaterial = softMaterial(0x5b2a78, { emissive: VIOLET_GLOW, emissiveIntensity: 1.5 });
-  const riftCrystals: THREE.Mesh[] = [];
-  for (const crystal of [
-    [0, 1.2, 0, 0.55], [-0.47, 0.62, 0.22, 0.35], [0.46, 0.7, -0.2, 0.32],
-  ] as const) {
-    const mesh = addMesh(scene, new THREE.ConeGeometry(crystal[3], crystal[1], 5), riftCrystalMaterial, new THREE.Vector3(RIFT_SHARD.centerX + crystal[0], crystal[1] / 2, RIFT_SHARD.centerZ + crystal[2]), new THREE.Vector3(0.82, 1, 0.82));
-    mesh.rotation.z = crystal[0] * 0.35;
-    riftCrystals.push(mesh);
-  }
-  const riftLight = new THREE.PointLight(VIOLET_GLOW, 9, 13, 2);
+  const riftCrystalMaterial = facetMaterial(0x6b3a8c, { emissive: VIOLET_GLOW, emissiveIntensity: 1.7 });
+  const riftCrystals: THREE.Mesh[] = [
+    addRiftCrystal(scene, new THREE.Vector3(RIFT_SHARD.centerX, 1.1, RIFT_SHARD.centerZ), 2.6, riftCrystalMaterial),
+    addRiftCrystal(scene, new THREE.Vector3(RIFT_SHARD.centerX - 0.5, 0.62, RIFT_SHARD.centerZ + 0.24), 1.6, riftCrystalMaterial),
+    addRiftCrystal(scene, new THREE.Vector3(RIFT_SHARD.centerX + 0.48, 0.72, RIFT_SHARD.centerZ - 0.2), 1.8, riftCrystalMaterial),
+    addRiftCrystal(scene, new THREE.Vector3(RIFT_SHARD.centerX + 0.1, 0.42, RIFT_SHARD.centerZ + 0.5), 1.1, riftCrystalMaterial),
+  ];
+  const riftLight = new THREE.PointLight(VIOLET_GLOW, 7, 13, 2);
   riftLight.position.set(RIFT_SHARD.centerX, 2.1, RIFT_SHARD.centerZ);
   scene.add(riftLight);
 
-  const stemMaterial = softMaterial(0x6b5874);
-  const capMaterial = softMaterial(0x326d69, { emissive: TEAL_GLOW, emissiveIntensity: 1.2 });
-  const spotMaterial = softMaterial(0xa4efd4, { emissive: TEAL_GLOW, emissiveIntensity: 1.35 });
+  const stemMaterial = clayMaterial(0x6b5874);
+  const capMaterial = clayMaterial(0x326d69, { emissive: TEAL_GLOW, emissiveIntensity: 1.4 });
+  const spotMaterial = clayMaterial(0xa4efd4, { emissive: TEAL_GLOW, emissiveIntensity: 1.6 });
   for (const spec of GLOW_MUSHROOMS) addMushroom(scene, spec, stemMaterial, capMaterial, spotMaterial);
-  const glowA = new THREE.PointLight(TEAL_GLOW, 6.5, 11, 2);
+  const glowA = new THREE.PointLight(TEAL_GLOW, 4.6, 11, 2);
   glowA.position.set(GLOW_MUSHROOMS[1].x, GLOW_MUSHROOMS[1].height + 0.6, GLOW_MUSHROOMS[1].z);
   scene.add(glowA);
-  const glowB = new THREE.PointLight(TEAL_GLOW, 6.5, 11, 2);
+  const glowB = new THREE.PointLight(TEAL_GLOW, 4.6, 11, 2);
   glowB.position.set(GLOW_MUSHROOMS[5].x, GLOW_MUSHROOMS[5].height + 0.6, GLOW_MUSHROOMS[5].z);
   scene.add(glowB);
 
-  const trunkMaterial = softMaterial(0x273d3c);
-  const leafMaterial = softMaterial(0x245046);
-  const leafLightMaterial = softMaterial(0x3e7560);
+  const trunkMaterial = clayMaterial(0x2d4640);
+  const leafMaterial = clayMaterial(0x286654);
+  const leafLightMaterial = clayMaterial(0x468a6d);
   for (const spec of TREE_TRUNKS) addTree(scene, spec, trunkMaterial, leafMaterial, leafLightMaterial);
 
-  addStarTrail(scene, { x: 1.5, z: -4.5 }, { x: -1, z: -10.2 }, 8, MINT_GLOW);
-  addStarTrail(scene, { x: 5.5, z: 0.5 }, { x: 11.2, z: 2.2 }, 10, WARM_LANTERN);
+  const starTrailA = addStarTrail(scene, { x: 1.5, z: -4.5 }, { x: -1, z: -10.2 }, 8, MINT_GLOW);
+  const starTrailB = addStarTrail(scene, { x: 5.5, z: 0.5 }, { x: 11.2, z: 2.2 }, 10, WARM_LANTERN);
+  const starTrails = [...starTrailA, ...starTrailB];
   addFlowerCluster(scene, -3.1, 2.4, 0xf2c1d1);
   addFlowerCluster(scene, 3.8, -3.3, 0xf5d17a);
   addFlowerCluster(scene, 7.6, 5.1, 0x9ed8ef);
   addFlowerCluster(scene, -7.2, 1.2, 0xc9b5ef);
 
   // A small, unlit firefly constellation adds depth without another light.
-  const fireflyMaterial = softMaterial(0xffe9a4, { emissive: 0xffd36a, emissiveIntensity: 2.1 });
+  const fireflyMaterial = clayMaterial(0xffe9a4, { emissive: 0xffd36a, emissiveIntensity: 2.4 });
   const fireflyGroup = new THREE.Group();
   for (let index = 0; index < 18; index += 1) {
     const angle = index * 2.41;
@@ -307,6 +364,10 @@ export function buildForestChapter1(scene: THREE.Scene): ForestChapter {
         crystal.position.y += Math.sin(performance.now() * 0.0015 + index) * dt * 0.04;
       });
       fireflyGroup.position.y = Math.sin(performance.now() * 0.0008) * 0.12;
+      starTrails.forEach((dot, index) => {
+        const twinkle = 0.75 + Math.sin(performance.now() * 0.003 + index * 1.7) * 0.25;
+        dot.scale.setScalar(twinkle);
+      });
       for (const [id, marker] of Object.entries(markers) as [ObjectiveId, THREE.Group][]) {
         marker.visible = activeObjective === id;
         marker.rotation.y += dt * 0.22;

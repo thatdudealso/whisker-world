@@ -36,6 +36,12 @@ See [DESIGN_DECISIONS.md](DESIGN_DECISIONS.md) for the decision record.
 - Camera framing references at gameplay distance.
 
 ## Current placeholder pass
-- Solid-color meshes, capsules, grid helpers.
-- Temporary debug labels in UI.
-- Code-built clay-toon forms and landmark silhouettes are the current interim look until finished assets are produced.
+- Code-built clay-toon forms (no DCC assets yet): `MeshToonMaterial` + a shared
+  gradient ramp for bodies/terrain/foliage, flat-shaded `MeshPhongMaterial`
+  for faceted crystal/rock surfaces - see `src/world/materials.ts`.
+- Real shadow mapping and an UnrealBloom post pass (`src/main.ts`) so emissive
+  landmarks (mushrooms, starlight, the Rift shard) actually glow.
+- No more solid-color capsules, grid helpers, or debug labels in Chapter 1 -
+  that earlier throwaway pass is gone. This is still an interim look until
+  finished DCC assets are produced, but it is the LOCKED clay/soft-toon
+  direction, not a greybox.
