@@ -29,7 +29,6 @@ import {
 
 const NIGHT_SKY = 0x18293c;
 const FOG_COLOR = 0x24384e;
-const DEEP_MOSS = 0x1e3b30;
 const MINT_GLOW = 0x9ce7bd;
 const TEAL_GLOW = 0x66d8c5;
 const VIOLET_GLOW = 0xb87cff;
@@ -248,10 +247,13 @@ export function buildForestChapter1(scene: THREE.Scene): ForestChapter {
   fill.position.set(10, 7, 9);
   scene.add(fill);
 
+  // `map` is a multiplier on `color`: keep the base color white so the
+  // painted moss texture carries its own tones instead of being crushed
+  // toward black by a second dark multiply.
   const ground = addMesh(
     scene,
     new THREE.CircleGeometry(FOREST_GROUND_RADIUS, 96),
-    clayMaterial(DEEP_MOSS, { map: createGroundTexture() }),
+    clayMaterial(0xffffff, { map: createGroundTexture() }),
     new THREE.Vector3(0, -0.04, 0),
   );
   ground.rotation.x = -Math.PI / 2;
