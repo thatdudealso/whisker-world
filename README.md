@@ -6,7 +6,7 @@ Whisker World is a 3D semi-open cat adventure about prowling through chapter-sca
 
 ## What kind of world is this?
 
-The planned chapter design is a region with a hub, side routes, landmarks, and a main objective chain. The finished game will let you wander, climb, backtrack, and choose which trail to follow, with progress opening new routes. The core fantasy is room to explore rather than a fixed sequence of camera beats; Phase 0 does not implement that full chapter structure yet.
+The planned chapter design is a region with a hub, side routes, landmarks, and a main objective chain. The finished game will let you wander, climb, backtrack, and choose which trail to follow, with progress opening new routes. This Phase 1 slice demonstrates that free-movement language through one compact Chapter 1 route.
 
 Six distinct cats are the structural heart of the adventure. Their roles and kits will give the roster different ways to read a space and solve a problem. Around them sits the syndicate: a shared social machine of jobs, debts, safehouses, rival cells, and loyalties that are never quite as simple as hero or villain.
 
@@ -20,20 +20,22 @@ For the full visual rules, palette notes, and placeholder boundaries, read the [
 
 ## Where the game is now
 
-This is Phase 0: a working greybox slice, not a finished game. The current build gives you a small piece of Chapter 1, the Whimsical Glowing Forest, rendered from Three.js primitives.
+This repository now contains the Phase 1 Chapter 1 vertical slice: a short, complete game loop in the Whimsical Whisperleaf Glowing Forest. It is intentionally scoped to one proud chapter rather than pretending the full six-chapter RPG already exists.
 
 Today you can:
 
-- Explore a night forest with a safe clearing, glowing mushrooms, path rocks, a terraced overlook, and a violet Rift shard.
-- Move the placeholder cat with WASD or the arrow keys.
-- Hold Shift to sprint, press Space to jump, and use Q / E to orbit the third-person camera.
-- Feel the current locomotion model: acceleration, deceleration, grounded jumping, bounds, and simple block collisions.
+- Start from a title screen, choose one of the six locked cats, and see each cat's role, colors, silhouette, and accessory identity.
+- Watch or skip the six-beat Chapter 1 intro while the game gates movement safely.
+- Explore a warm night forest built from hand-authored Three.js clay-toon geometry: layered trees, rounded moss forms, glowing mushrooms, starlight trails, a terraced overlook, and the Rift shard.
+- Follow three explicit objectives with world beacons and HUD feedback: reach the overlook, investigate the shard, and return to the clearing.
+- Finish with a clear Chapter 1 complete screen, then replay the chapter or return to the title.
+- Move with WASD or the arrow keys, hold Shift to sprint, press Space to jump, use Q / E to orbit the camera, and use [ / ] or 1-6 to swap cats during play.
 
-The shapes are intentionally greybox. Clay/toon assets, the complete roster, combat, saves, multiplayer, and final story are still in progress. Rapier physics is planned next; it is not part of this slice.
+The slice is still not the full game: Chapters 2-6 geometry, combat, saves, multiplayer, cloud identity, and Rapier physics remain out of scope. The roster, art direction, Chapter 1 biome landmarks, and intro beat order are locked by the design documents.
 
-The near-term design direction is to grow this forest into a chapter with a hub, routes, and Rift-touched discoveries, then carry the same free-movement language into the wider adventure. The [game design brief](docs/GAME_DESIGN.md) is the source of truth as that work evolves.
+The [game design brief](docs/GAME_DESIGN.md) and [playtest checklist](docs/PLAYTEST.md) are the source of truth as the adventure grows.
 
-## Run the greybox locally
+## Run the slice locally
 
 Requirements: Node 20 or newer. Continuous integration runs on Node 22.
 
@@ -42,7 +44,7 @@ npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite, usually `http://localhost:5173`. The current playable slice is desktop-first.
+Open the local URL printed by Vite, usually `http://localhost:5173`. The current slice is desktop-first.
 
 Useful checks:
 
@@ -53,7 +55,7 @@ npm run build
 npm run preview
 ```
 
-`npm test` runs the pure game-logic tests with Vitest. `npm run build` typechecks and creates the Vite production build. The eventual hosted path is planned for 5432wire.com/whisker-world; it is not a live game destination yet.
+`npm test` runs the pure game-logic tests with Vitest. `npm run build` typechecks and creates the Vite production build, and `npm run preview` serves that production build locally. The eventual hosted path is planned for 5432wire.com/whisker-world; no hosting or cloud resources are provisioned here.
 
 ## Find your way around
 
@@ -70,7 +72,7 @@ npm run preview
 
 | Document | Why open it |
 | --- | --- |
-| [GAME_DESIGN.md](docs/GAME_DESIGN.md) | The adventure's six-cat structure, syndicate, chapter shape, and Phase 0 boundaries. |
+| [GAME_DESIGN.md](docs/GAME_DESIGN.md) | The adventure's six-cat structure, syndicate, chapter shape, and current slice boundaries. |
 | [ART_BIBLE.md](docs/ART_BIBLE.md) | The locked clay/soft toon world and outfit/accessory language. |
 | [STORY_SYNDICATE.md](docs/STORY_SYNDICATE.md) | The Rift frame, syndicate context, and story questions still waiting for canon. |
 | [TECH.md](docs/TECH.md) | Three.js, input, locomotion, camera, chapter conventions, and the future path base. |
@@ -81,7 +83,7 @@ npm run preview
 
 ## Contributing
 
-Keep the world 3D, chapter-scale, and free to explore. Keep greybox work readable and make the clay/toon direction easy to replace with finished art. Before changing the game's shape, check the design and art documents above.
+Keep the world 3D, chapter-scale, and free to explore. Keep code-built clay/toon work readable and easy to replace with finished art. Before changing the game's shape, check the design and art documents above.
 
 Contributor and agent conventions live in [AGENTS.md](AGENTS.md), including the commands used to validate a change. Please do not add secrets, real environment values, cloud resources, or changes to the separate 5432wire monorepo from this project.
 

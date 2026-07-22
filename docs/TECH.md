@@ -1,13 +1,13 @@
 # Tech - Whisker World
 
-## Stack (Phase 0)
+## Stack (Phase 1 slice)
 
 | Layer | Choice |
 |-------|--------|
 | Language | TypeScript |
 | Bundler / dev | Vite |
 | Render | Three.js (WebGL) |
-| Physics | Rapier (planned next; not in Phase 0) |
+| Physics | Kinematic controller in this slice; Rapier planned later |
 | Identity (later host) | Cognito - identity only |
 | Game data (later) | Postgres DB `whisker_world` (separate from other 5432wire apps) |
 
@@ -19,7 +19,7 @@
 - Mobile: on-screen stick / touch later; document in [PLAYTEST.md](PLAYTEST.md).
 - Motion / device orientation: optional later; must degrade gracefully and stay opt-in.
 
-Locomotion slice (Phase 0 greybox, kinematic - Rapier can replace later):
+Locomotion slice (kinematic controller with replaceable placeholder geometry - Rapier can replace later):
 
 - `src/input/keyboard.ts` owns key state and emits a per-frame snapshot (normalized move vector, sprint held, edge-triggered jump, orbit direction). Clears on window blur.
 - `src/entities/cats/locomotion.ts` is the pure motion model (no three.js): horizontal velocity approaches input * speed cap at a constant rate (`acceleration` when input held, `deceleration` when released - the "not ice-skating, not tank-sticky" band); yaw turns toward travel direction; single jump from grounded under gravity; circular world-bounds clamp (radius 19, matching the chapter ground disc); AABB blocks push the cat out sideways while feet are below the block top and act as landable platforms at/above it. Tuning lives in `DEFAULT_TUNING`. Chapters hand the player a `SpawnPose` (position + yaw) that seeds the locomotion state.
@@ -28,10 +28,10 @@ Locomotion slice (Phase 0 greybox, kinematic - Rapier can replace later):
 
 ## World / chapters
 
-Chapter 1 greybox (Whimsical Glowing Forest, biome locked on WW-D2) replaces the Phase 0 flat greybox:
+Chapter 1 code-built scene (Whisperleaf Glowing Forest, biome locked on WW-D2) replaces the Phase 0 flat greybox:
 
 - `src/world/chapters/forestLayout.ts` - pure layout data, no three.js: spawn pose, safe-clearing circle, bounds constants, prop footprints, and `forestObstacles()` (controller-ready AABBs). Unit-tested in `tests/forestLayout.test.ts` (bounds containment, clearing safety, overlook climbability vs jump apex, spawn seeding).
-- `src/world/chapters/forestChapter1.ts` - three.js builder: night mood (background + `FogExp2`), ground disc (radius 20), spawn ring marker, terraced overlook (3 x 0.9m steps), violet rift shard + ground crack, bioluminescent mushroom proxies, rim trunks, path-rock ring with route gaps, starlight trail dots. Returns `{ obstacles, spawn }` for `main.ts`.
+- `src/world/chapters/forestChapter1.ts` - Three.js builder: night mood (background + `FogExp2`), code-built clay-toon foliage and landmarks, ground disc (radius 20), spawn ring marker, terraced overlook (3 x 0.9m steps), violet Rift shard + ground crack, bioluminescent mushroom forms, rim trunks, organic path-stone ring with route gaps, and starlight trail dots. Returns `{ obstacles, spawn }` for `main.ts`.
 
 Conventions:
 
@@ -60,7 +60,7 @@ control to the game. Finishing (completed or skipped) sets
 `localStorage["ww_ch1_intro_seen"] = "1"`, so replay is opt-in via
 `?cutscene=1` (forces playback even when the flag is set). While the cutscene
 plays, `KeyboardInput.setEnabled(false)` gates gameplay input; the frame loop
-keeps rendering the greybox behind the cards. If localStorage throws (private
+keeps rendering the forest behind the cards. If localStorage throws (private
 mode), the intro plays and the flag write is swallowed.
 
 Unit tests: `tests/cutscene.test.ts` (beat order, state machine, skip,
@@ -83,7 +83,7 @@ Do not hardcode absolute production asset URLs in source. Prefer Vite `import.me
 | Medium | Default laptop / mid phone | Balanced |
 | High | Desktop discrete GPU | Higher pixel ratio, shadows, denser world |
 
-Implement tiers later under `src/systems` (or similar). Phase 0: single quality path, `devicePixelRatio` capped at 2.
+Implement tiers later under `src/systems` (or similar). The current slice has one quality path, with `devicePixelRatio` capped at 1.8.
 
 ## Source layout (stubs)
 

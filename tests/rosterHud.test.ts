@@ -7,12 +7,17 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-function makeElement(): any {
+function makeElement(): {
+  style: { cssText: string; borderLeft: string };
+  textContent: string;
+  appendChild: (child: unknown) => void;
+  addEventListener: (type: string, listener: unknown) => void;
+} {
   return {
     style: { cssText: "", borderLeft: "" },
     textContent: "",
-    appendChild: vi.fn(),
-    addEventListener: vi.fn(),
+    appendChild: vi.fn<(child: unknown) => void>(),
+    addEventListener: vi.fn<(type: string, listener: unknown) => void>(),
   };
 }
 

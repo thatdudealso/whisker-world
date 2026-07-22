@@ -1,6 +1,6 @@
 # Game Design - Whisker World
 
-Phase 0 design brief. Details evolve; constraints in [AGENTS.md](../AGENTS.md) win on conflict.
+Phase 1 vertical-slice design brief. Details evolve; constraints in [AGENTS.md](../AGENTS.md) win on conflict.
 
 ## Pitch
 
@@ -33,10 +33,10 @@ See [STORY_SYNDICATE.md](STORY_SYNDICATE.md) for the Rift frame and the chapter 
 - Movement is free within the chapter bounds (ground + vertical play later).
 - **Not Orbital rails:** no exclusive fixed-camera on-rails locomotion as the core loop.
 - Progress gates (story, abilities, keys) unlock new routes; backtracking is encouraged.
-- Multi-chapter world map / select is later; Phase 0 includes a chapter-select stub alongside the greybox locomotion slice.
-- **Chapter 1 greybox exists**: Whimsical Glowing Forest (Luna's home, biome locked WW-D2) - spawn clearing, terraced overlook, rift-crack shard, glowing mushrooms, starlight trails. Greybox primitives only (`src/world/chapters/`); clay/toon art comes later per [ART_BIBLE.md](ART_BIBLE.md).
+- Multi-chapter world map / select is later; the current slice is a complete Chapter 1 loop and keeps Chapters 2-6 locked.
+- **Chapter 1 vertical slice exists**: Whisperleaf Glowing Forest (Luna's home, biome locked WW-D2) - title and cat select, six-beat intro, spawn clearing, terraced overlook, Rift shard, glowing mushrooms, starlight trails, tracked objectives, and completion/replay flow. The code-built scene uses clay-toon forms and remains replaceable placeholder art under `src/world/chapters/`.
 
-## Out of scope (Phase 0)
+## Out of scope (Phase 1 slice)
 
-- Final art, final story, multiplayer, full combat, full save cloud.
+- Chapters 2-6, final art, final story beyond the locked Chapter 1 beats, multiplayer, combat, saves, cloud identity, and Rapier physics.
 - Any 2D engine rewrite.

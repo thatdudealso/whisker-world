@@ -1,6 +1,6 @@
 # Hosting on 5432wire (planned)
 
-**Document only.** Do not provision AWS, Cognito apps, or databases from this scaffold unless the captain explicitly orders it. Do not modify the 5432wire monorepo as part of Whisker World Phase 0.
+**Document only.** Do not provision AWS, Cognito apps, or databases from this repository unless the captain explicitly orders it. Do not modify the 5432wire monorepo as part of Whisker World slice work.
 
 ## Public path
 
@@ -32,4 +32,4 @@ Rationale: avoid coupling game schemas / migrations / backups to unrelated apps.
 ## Client vs services
 
 - This repo: browser client (Vite + Three.js) + docs + future `services/api` stubs.
-- Server APIs, IAM, and DB provisioning: later, under explicit ops tasks - not Phase 0.
+- Server APIs, IAM, and DB provisioning: later, under explicit ops tasks; they are outside the current client slice.
