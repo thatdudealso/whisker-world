@@ -2,8 +2,9 @@
  * Chapter table stub: six biome chapters, one home cat each (WW-D2).
  *
  * Data only - biome geometry lives in the chapter builders under src/world,
- * not in this table. Titles, ids, homeCatId mapping, and the chapter-1
- * forest/Luna unlock are the content contract.
+ * not in this table. Titles, ids, homeCatId mapping, and the static content
+ * readiness flags are the content contract; profile progression lives in
+ * chapterProgress.ts.
  */
 import type { CatId } from "./cats";
 
@@ -22,7 +23,7 @@ export interface ChapterDefinition {
   biome: string;
   /** The cat whose story anchors this chapter. */
   homeCatId: CatId;
-  /** Locked chapters show "coming soon" in the select stub. */
+  /** Content-readiness flag; locked chapters show "coming soon" in the select stub. */
   locked: boolean;
 }
 

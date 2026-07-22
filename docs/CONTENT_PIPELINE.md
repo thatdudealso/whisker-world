@@ -28,9 +28,12 @@ deltas on the shared feel). Table order = UI cycle order. Validated by
 
 **Chapters** - [`src/content/chapters.ts`](../src/content/chapters.ts), typed
 `ChapterDefinition`: `id`, `title`, `biome` keyword, `homeCatId` (must be a
-roster id), `locked`. Only chapter-1 (forest / Luna) is unlocked; the select
-stub shows "coming soon" for the rest. Geometry stays in `src/world`, never
-in content tables.
+roster id), `locked`. The static `locked` flag records content readiness:
+chapter-1 (forest / Luna) is enterable, while the remaining chapters show
+"coming soon" until their worlds ship. Profile progression is stored
+separately by [`src/content/chapterProgress.ts`](../src/content/chapterProgress.ts):
+a fresh profile starts with chapter 1, and completing a chapter persists the
+next chapter's unlock. Geometry stays in `src/world`, never in content tables.
 
 ## TODO
 

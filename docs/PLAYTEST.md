@@ -62,7 +62,7 @@ Use before claiming a build is playable. Expand as features land.
 - [ ] Swapping mid-run keeps position and momentum (no teleport, no camera snap)
 - [ ] Dash sprints visibly faster than Luna; Blaze feels a touch slower
 - [ ] Reloading the tab keeps the last picked cat (sessionStorage)
-- [ ] Chapter chips show under the title; only Whisperleaf Forest is unlocked
+- [ ] On a fresh profile, chapter chips show under the title with Whisperleaf Forest as the only unlocked chapter; after Chapter 1 completion, Moonlit Rooftops appears as the persisted next unlock while later chapters remain hidden
 - [ ] Clicking a locked chapter shows a "coming soon" toast, nothing else happens
 
 ## Mobile (later)
